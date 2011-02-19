@@ -1,4 +1,7 @@
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 
 using namespace std;
 
@@ -7,31 +10,31 @@ struct TABLE{
   TABLE* next;
 };
 const int MAX_KEYS = 5000;
+const int RANDOM = 30000;
 
-int randNUMS(int rand[]);
+int randNUMS(int *rand);
 int hashTableSize();
 int HASH(int key,int tbSIZE);
-int doubleHASH(int key,int tbSIZE);
-void threeHashMethods(int rand[MAX_KEYS],int tbSIZE);
-int openAddressing_QP(int rand[MAX_KEYS],int tbSIZE);
-int openAddressing_DH();
+void threeHashMethods(int *randARRAY,int tbSIZE);
+int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int quadraticPROBE(int address,int rand[MAX_KEYS],int hashTABLE[]);
-int averageHashTable();
+int quadraticPROBE(int address,int *HASH,int probeTHIS);
+int doubleHASH(int key,int tbSIZE);
+void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE);
 
 int main(){
   int tbSIZE = 0;
-  int rand[MAX_KEYS] = {0};
+  int randARRAY[MAX_KEYS] = {0};
   
   ///create random array of 5,000 unique int
   ///they will be of values between 1-30000
-  randNUMS(rand);
+  randNUMS(randARRAY);
   ///get hash table size from user
   ///table must be larger than 6500 int
   tbSIZE = hashTableSize();
   ///driver function for all three
   ///collision resolution techniques
-  threeHashMethods(rand,tbSIZE);
+  threeHashMethods(randARRAY,tbSIZE);
 
   return 0;
 }
@@ -47,50 +50,94 @@ int doubleHASH(int key,int tbSIZE){
 }
 int hashTableSize(){
   int userCHOOSE = 0;
-  ///user must choose a hash table size above 6500
-  userCHOOSE = 7000; 
+ 
+  userCHOOSE = 8000; 
   return userCHOOSE;
 }
-int randNUMS(int rand[]){
-  ///temporary fix for rand array of numbers till hash is running
-  for(int a = 0; a < 10; a++){
-    rand[a] = a;
+int randNUMS(int *randARRAY){
+  ///temporary fix for randARRAY array of numbers till hash is running
+  int check = 0;
+  int index = 0;
+  int loop = 0;
+
+  srand (time(NULL));
+  for(index = 0; index < MAX_KEYS; index++){
+   check = rand() % RANDOM + 1;
+   while(randARRAY[loop] != 0){
+   if(check == randARRAY[index]){
+     check = rand() % RANDOM + 1;
+     loop = 0;
+   }
+    loop++;
+   }
+   randARRAY[index] = check;
   }
-  return *rand;
-}
-void threeHashMethods(int rand[],int tbSIZE){
-  ///this menu will allow user to select collision method
-  openAddressing_QP(rand,tbSIZE);
   
+  return *randARRAY;
 }
-int openAddressing_QP(int rand[],int tbSIZE){
+void threeHashMethods(int *randARRAY,int tbSIZE){
+  int *HT;
+  ///this menu will allow user to select collision method
+  HT = openAddressing(randARRAY,tbSIZE);
+  searchELEMENTS(randARRAY,HT,tbSIZE);
+}
+int* openAddressing(int *randARRAY,int tbSIZE){
   int key = 0,
       address = 0,
-      hashTABLE[tbSIZE];
+      hashTABLE[tbSIZE],
+      *HT = hashTABLE;
 
-  while(rand[key] != 0){
+  while(randARRAY[key] != 0){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
     ///empty index is found
-    address = HASH(rand[key++],tbSIZE);
+    address = HASH(randARRAY[key],tbSIZE);
     ///if address is available 
     ///grab the key
     if(hashTABLE[address] == 0){
-       hashTABLE[address] = rand[key];
+       hashTABLE[address] = randARRAY[key];
     }
     ///if a collision is the result run
     ///a quadratic probe until available address is found 
     else{
-      address= quadraticPROBE(address,rand,hashTABLE);
-      hashTABLE[address] = rand[key];
+      address = quadraticPROBE(address,hashTABLE,0);
+      hashTABLE[address] = randARRAY[key];
     }
+    key++;
     }
-  return *hashTABLE;
+  return HT;
 }
-int quadraticPROBE(int address,int rand[],int hashTABLE[]){
-  while(hashTABLE[address] != 0){
+int quadraticPROBE(int address,int *HASH,int probeTHIS){
+  while(HASH[address] != probeTHIS){
     address = (address^2) + address;
   }
   return address;
+}
+void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE){
+  int key = 0,
+    address = 0,
+    non = 0,
+    probe = 0;
+  while(randARRAY[key] != 0){
+    ///get a purposed address
+    ///and move through indexes
+    ///in array of random int till
+    ///matched int's are found
+    address = HASH(randARRAY[key],tbSIZE);
+
+    if(HT[address] == randARRAY[key]){
+      non++;  
+    }
+    ///if int are not a match use quadratic probe 
+    else{
+      address = quadraticPROBE(address,HT,randARRAY[key]);
+      if(HT[address] == randARRAY[key]){
+	probe++;
+      }
+    }
+    key++;
+    }
+  cout << "found without probe: " << non << endl;
+  cout << "found with probe: " << probe << endl;
 }
