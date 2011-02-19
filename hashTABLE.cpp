@@ -14,11 +14,11 @@ const int RANDOM = 30000;
 
 int randNUMS(int *rand);
 int hashTableSize();
-int HASH(int key,int tbSIZE);
+int HASH(int key,int listSIZE);
 void threeHashMethods(int *randARRAY,int tbSIZE);
 int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int quadraticPROBE(int address,int *HASH,int probeTHIS);
+int linearPROBE(int address,int *HASH,int probeTHIS);
 int doubleHASH(int key,int tbSIZE);
 void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE);
 
@@ -38,9 +38,9 @@ int main(){
 
   return 0;
 }
-int HASH(int key,int tbSIZE){
+int HASH(int key,int listSIZE){
   int address = 0;
-  address = key % tbSIZE;
+  address = key % listSIZE;
   return address;
 }
 int doubleHASH(int key,int tbSIZE){
@@ -87,30 +87,35 @@ int* openAddressing(int *randARRAY,int tbSIZE){
       hashTABLE[tbSIZE],
       *HT = hashTABLE;
 
+  for(int a = 0; a < tbSIZE; a++){
+    hashTABLE[a] = 0;
+  }
+
   while(randARRAY[key] != 0){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
     ///empty index is found
-    address = HASH(randARRAY[key],tbSIZE);
+    address = HASH(randARRAY[key],MAX_KEYS);
     ///if address is available 
     ///grab the key
     if(hashTABLE[address] == 0){
        hashTABLE[address] = randARRAY[key];
     }
     ///if a collision is the result run
-    ///a quadratic probe until available address is found 
+    ///a linear probe until available address is found 
     else{
-      address = quadraticPROBE(address,hashTABLE,0);
+      address = linearPROBE(address,hashTABLE,0);
       hashTABLE[address] = randARRAY[key];
     }
     key++;
     }
   return HT;
 }
-int quadraticPROBE(int address,int *HASH,int probeTHIS){
+int linearPROBE(int address,int *HASH,int probeTHIS){
   while(HASH[address] != probeTHIS){
-    address = (address^2) + address;
+    ///address = (address^2) + address;
+    address = address + 1;
   }
   return address;
 }
@@ -129,9 +134,9 @@ void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE){
     if(HT[address] == randARRAY[key]){
       non++;  
     }
-    ///if int are not a match use quadratic probe 
+    ///if int are not a match use linear probe 
     else{
-      address = quadraticPROBE(address,HT,randARRAY[key]);
+      address = linearPROBE(address,HT,randARRAY[key]);
       if(HT[address] == randARRAY[key]){
 	probe++;
       }
