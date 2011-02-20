@@ -103,9 +103,7 @@ int* openAddressing(int *randARRAY,int tbSIZE){
   for(int a = 0; a < tbSIZE; a++){
     hashTABLE[a] = 0;
   }
-  cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
-  cout << "Load Factor = " << percent << "%\nOptimally only: " << loadFACTOR << " element should be loaded." << endl;
-  cout << "Results from searching for 2500 items." << endl;
+  
          
   while(randARRAY[key] != 0){
     ///get a purposed address
@@ -126,14 +124,23 @@ int* openAddressing(int *randARRAY,int tbSIZE){
       address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
       hashTABLE[address] = randARRAY[key];
     }
+    if(hashTABLE[address] == randARRAY[key]){
     key++;
+    }
   }
+  cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
+  cout << "Load Factor = " << percent << endl;
+  cout << "Results from searching for 2500 items." << endl;
+
   return HT;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
   while(HASH[address] != probeTHIS){
-    address = (address + 1) % load;
+    address = (address + 1);
     probe++;
+    if(address >= load){
+      address = 0;
+    }
   }
   return address;
 }
@@ -141,14 +148,17 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
     address = 0,
     probe = 0,
-    found = 0;
+    found = 0,
+    attempts = 0;
      
   while(randARRAY[key] != 0){
-    //randARRAY = new(nothrow) int[1];
-    if(HT[address] != randARRAY[key]){
+    address =  HASH(randARRAY[key],tbSIZE);
+    while(HT[address] != randARRAY[key] && attempts < tbSIZE){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
-      found++; 
+      found++;
+      attempts++; 
     }
+    attempts = 0;
     key = key + 2;
   }
   found = probe / found;
