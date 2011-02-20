@@ -18,7 +18,7 @@ int HASH(int key,int listSIZE);
 void threeHashMethods(int *randARRAY,int tbSIZE);
 int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int linearPROBE(int address,int *HASH,int probeTHIS);
+int quadraticPROBE(int address,int *HASH,int probeTHIS,int tbSIZE);
 int doubleHASH(int key,int tbSIZE);
 void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE);
 
@@ -51,7 +51,13 @@ int doubleHASH(int key,int tbSIZE){
 int hashTableSize(){
   int userCHOOSE = 0;
  
-  userCHOOSE = 8000; 
+  cout << "Enter desired hash table size." << endl;
+  cout << "NOTE: hash table size must exceed 6500: " << endl;
+  cin >> userCHOOSE;
+  if(userCHOOSE < 6500){
+    cout << "Whoops " << userCHOOSE << " is to small!" << endl;
+    hashTableSize();
+  }
   return userCHOOSE;
 }
 int randNUMS(int *randARRAY){
@@ -77,21 +83,23 @@ int randNUMS(int *randARRAY){
 }
 void threeHashMethods(int *randARRAY,int tbSIZE){
   int *HT;
+
   ///this menu will allow user to select collision method
   HT = openAddressing(randARRAY,tbSIZE);
-  searchELEMENTS(randARRAY,HT,tbSIZE);
+ 
 }
 int* openAddressing(int *randARRAY,int tbSIZE){
   int key = 0,
       address = 0,
       hashTABLE[tbSIZE],
       *HT = hashTABLE;
-
+  bool overflow = true;
+ 
   for(int a = 0; a < tbSIZE; a++){
     hashTABLE[a] = 0;
   }
 
-  while(randARRAY[key] != 0){
+  while(randARRAY[key] != 0 && overflow){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
@@ -105,44 +113,29 @@ int* openAddressing(int *randARRAY,int tbSIZE){
     ///if a collision is the result run
     ///a linear probe until available address is found 
     else{
-      address = linearPROBE(address,hashTABLE,0);
+      address = quadraticPROBE(address,hashTABLE,0,tbSIZE);
+      if(hashTABLE[address] == 0){
       hashTABLE[address] = randARRAY[key];
-    }
+      cout << address << endl;
+      }
+      else{
+        cout << "ERROR! probe exceeded hash table size." << endl;
+        overflow = false;
+      }
     key++;
     }
+  }
   return HT;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS){
-  while(HASH[address] != probeTHIS){
-    ///address = (address^2) + address;
-    address = address + 1;
+int quadraticPROBE(int address,int *HASH,int probeTHIS,int tbSIZE){
+  ///lool for empty index but also make sure address does not
+  ///exceed the table size.
+ while(HASH[address] != probeTHIS && address < tbSIZE){
+   address = (address^2) + address;
+   ///address = address + 1;
   }
+ if(address > tbSIZE){
+   address = 0;
+ }
   return address;
-}
-void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE){
-  int key = 0,
-    address = 0,
-    non = 0,
-    probe = 0;
-  while(randARRAY[key] != 0){
-    ///get a purposed address
-    ///and move through indexes
-    ///in array of random int till
-    ///matched int's are found
-    address = HASH(randARRAY[key],tbSIZE);
-
-    if(HT[address] == randARRAY[key]){
-      non++;  
-    }
-    ///if int are not a match use linear probe 
-    else{
-      address = linearPROBE(address,HT,randARRAY[key]);
-      if(HT[address] == randARRAY[key]){
-	probe++;
-      }
-    }
-    key++;
-    }
-  cout << "found without probe: " << non << endl;
-  cout << "found with probe: " << probe << endl;
 }
