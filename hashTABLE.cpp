@@ -18,7 +18,7 @@ int HASH(int key,int listSIZE);
 void threeHashMethods(int *randARRAY,int tbSIZE);
 int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int quadraticPROBE(int address,int *HASH,int probeTHIS,int tbSIZE);
+int quadraticPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR);
 int doubleHASH(int key,int tbSIZE);
 void searchELEMENTS(int *randARRAY,int *HT,int tbSIZE);
 
@@ -93,13 +93,13 @@ int* openAddressing(int *randARRAY,int tbSIZE){
       address = 0,
       hashTABLE[tbSIZE],
       *HT = hashTABLE;
-  bool overflow = true;
+  int loadFACTOR = 0.75 * tbSIZE;
  
-  for(int a = 0; a < tbSIZE; a++){
-    hashTABLE[a] = 0;
+  for(int a = 0; a < tbSIZE * tbSIZE; a++){
+  hashTABLE[a] = 0;
   }
 
-  while(randARRAY[key] != 0 && overflow){
+  while(randARRAY[key] != 0 && address < loadFACTOR){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
@@ -113,29 +113,20 @@ int* openAddressing(int *randARRAY,int tbSIZE){
     ///if a collision is the result run
     ///a linear probe until available address is found 
     else{
-      address = quadraticPROBE(address,hashTABLE,0,tbSIZE);
-      if(hashTABLE[address] == 0){
+      address = quadraticPROBE(address,hashTABLE,0,loadFACTOR);
       hashTABLE[address] = randARRAY[key];
       cout << address << endl;
       }
-      else{
-        cout << "ERROR! probe exceeded hash table size." << endl;
-        overflow = false;
-      }
     key++;
     }
-  }
   return HT;
 }
-int quadraticPROBE(int address,int *HASH,int probeTHIS,int tbSIZE){
-  ///lool for empty index but also make sure address does not
+int quadraticPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR){
+  ///look for empty index but also make sure address does not
   ///exceed the table size.
- while(HASH[address] != probeTHIS && address < tbSIZE){
+ while(HASH[address] != probeTHIS && address < loadFACTOR){
    address = (address^2) + address;
    ///address = address + 1;
   }
- if(address > tbSIZE){
-   address = 0;
- }
   return address;
 }
