@@ -19,7 +19,7 @@ int HASH(int key,int listSIZE);
 void threeHashMethods(int *randARRAY,int tbSIZE);
 int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int linearPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR);
+int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe);
 int doubleHASH(int key,int tbSIZE);
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
@@ -69,15 +69,15 @@ int randNUMS(int *randARRAY){
 
   srand (time(NULL));
   for(index = 0; index < MAX_KEYS; index++){
-   check = rand() % RANDOM + 1;
-   while(randARRAY[loop] != 0){
-   if(check == randARRAY[index]){
-     check = rand() % RANDOM + 1;
-     loop = 0;
-   }
-    loop++;
-   }
-   randARRAY[index] = check;
+    check = rand() % RANDOM + 1;
+    while(randARRAY[loop] != 0){
+      if(check == randARRAY[index]){
+	check = rand() % RANDOM + 1;
+	loop = 0;
+      }
+      loop++;
+    }
+    randARRAY[index] = check;
   }
   
   return *randARRAY;
@@ -92,64 +92,69 @@ void threeHashMethods(int *randARRAY,int tbSIZE){
 }
 int* openAddressing(int *randARRAY,int tbSIZE){
   int key = 0,
-      address = 0,
-      hashTABLE[tbSIZE],
-     *HT = hashTABLE;
+    address = 0,
+    prb = 0,
+    hashTABLE[tbSIZE],
+    *HT = hashTABLE;
+  int percent = (5000.00 / tbSIZE) * 100;
   int load = (5000.00 / tbSIZE) * 10;
   int loadFACTOR = (tbSIZE * load)/10;
-      cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
-      cout << "Load Factor = " << loadFACTOR << endl;
+  
+  for(int a = 0; a < tbSIZE; a++){
+    hashTABLE[a] = 0;
+  }
+  cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
+  cout << "Load Factor = " << percent << "%\nOptimally only: " << loadFACTOR << " element should be loaded." << endl;
+  cout << "Results from searching for 2500 items." << endl;
          
   while(randARRAY[key] != 0){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
     ///empty index is found
+    if(randARRAY[key] > tbSIZE){
     address = HASH(randARRAY[key],loadFACTOR);
+    }
     ///if address is available 
     ///grab the key
     if(hashTABLE[address] == 0){
-       hashTABLE[address] = randARRAY[key];
+      hashTABLE[address] = randARRAY[key];
     }
     ///if a collision is the result run
     ///a linear probe until available address is found 
     else{
-      address = linearPROBE(address,hashTABLE,0,loadFACTOR);
+      address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
       hashTABLE[address] = randARRAY[key];
-      }
-    key++;
     }
+    key++;
+  }
   return HT;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR){
-  ///look for empty index but also make sure address does not
-  ///exceed the table size.
- while(HASH[address] != probeTHIS && address < loadFACTOR){
-   address = address + 1;
+int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
+  while(HASH[address] != probeTHIS){
+    address = (address + 1) % load;
+    probe++;
   }
   return address;
 }
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
-      address = 0,
-     examine = 0;
-  int load = (5000.00 / tbSIZE) * 10;
-  int loadFACTOR = (tbSIZE * load)/10;
+    address = 0,
+    probe = 0,
+    found = 0;
      
-
-
   while(randARRAY[key] != 0){
-    ///get a purposed address
-    ///and move through indexes
-    ///in array of random int till
-    ///searched int is found
-    address = HASH(randARRAY[key],loadFACTOR); 
-    while(HT[address] != randARRAY[key]){
-      address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
-      examine++;
-      }
-    key++;
+    //randARRAY = new(nothrow) int[1];
+    if(HT[address] != randARRAY[key]){
+      address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+      found++; 
     }
-    cout << "Linear Probing." << endl;
-    cout << examine << " items examined." << endl;
+    key = key + 2;
+  }
+  found = probe / found;
+
+  cout << "Linear Probing." << endl;
+  cout << probe  << " items examined ";
+  cout << "(avg = " << found << " items examined per search.)" << endl;
 }
+
