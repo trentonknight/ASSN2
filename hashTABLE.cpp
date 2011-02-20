@@ -19,7 +19,7 @@ int HASH(int key,int listSIZE);
 void threeHashMethods(int *randARRAY,int tbSIZE);
 int* openAddressing(int *randARRAY,int tbSIZE);
 int seperateCHAINING();
-int linearPROBE(int address,int *HASH,int probeTHIS,double loadFACTOR);
+int linearPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR);
 int doubleHASH(int key,int tbSIZE);
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
@@ -98,7 +98,7 @@ int* openAddressing(int *randARRAY,int tbSIZE){
   int load = (5000.00 / tbSIZE) * 10;
   int loadFACTOR = (tbSIZE * load)/10;
       cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
-      cout << "Load Factor = " << load << endl;
+      cout << "Load Factor = " << loadFACTOR << endl;
          
   while(randARRAY[key] != 0){
     ///get a purposed address
@@ -121,7 +121,7 @@ int* openAddressing(int *randARRAY,int tbSIZE){
     }
   return HT;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,double loadFACTOR){
+int linearPROBE(int address,int *HASH,int probeTHIS,int loadFACTOR){
   ///look for empty index but also make sure address does not
   ///exceed the table size.
  while(HASH[address] != probeTHIS && address < loadFACTOR){
@@ -133,19 +133,19 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
       address = 0,
      examine = 0;
-      double load = (5000.00 / tbSIZE) * 100;
-      load = load / 100;
-      int loadFACTOR = load * tbSIZE;
+  int load = (5000.00 / tbSIZE) * 10;
+  int loadFACTOR = (tbSIZE * load)/10;
+     
+
 
   while(randARRAY[key] != 0){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
     ///searched int is found
-    address = HASH(randARRAY[key],loadFACTOR);
-   
+    address = HASH(randARRAY[key],loadFACTOR); 
     while(HT[address] != randARRAY[key]){
-      address = linearPROBE(address,HT,randARRAY[key],loadFACTOR);
+      address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
       examine++;
       }
     key++;
