@@ -26,8 +26,9 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 int main(){
   int tbSIZE = 0;
   int randARRAY[MAX_KEYS];
-  for(int a = 0; a <= MAX_KEYS; a++){
-    randARRAY[a] = 0;
+  for(int a = 0; a < MAX_KEYS + 1; a++){
+    randARRAY[a] = 0; 
+   
   }
   
   ///create random array of 5,000 unique int
@@ -97,20 +98,17 @@ int* openAddressing(int *randARRAY,int tbSIZE){
   int key = 0,
     address = 0,
     prb = 0,
-    hashTABLE[tbSIZE * 2],
-    *HT = hashTABLE;
+    *hashTABLE;
   int percent = (5000.00 / tbSIZE) * 100;
   int load = (5000.00 / tbSIZE) * 10;
   int loadFACTOR = (tbSIZE * load)/10;
-
-  if(percent > 0){
-  
-  for(int a = 0; a < tbSIZE; a++){
-    
+  randARRAY[MAX_KEYS + 1] = 0;
+  hashTABLE = new(nothrow) int[tbSIZE];
+  for(int a = 0; a < tbSIZE + 1; a++){
     hashTABLE[a] = 0;
   }
      
-  while(randARRAY[key] != 0){
+  while(randARRAY[key] != 0 && key < MAX_KEYS){
     ///get a purposed address
     ///and move through indexes
     ///in array of random int till
@@ -134,14 +132,10 @@ int* openAddressing(int *randARRAY,int tbSIZE){
     }
   }
   cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
-  cout << "Load Factor = " << percent << "%" << endl;
+  cout << "Load Factor = " << percent << endl;
   cout << "Results from searching for 2500 items." << endl;
-  }
-  else{
-    cout << "Load Factor is maxed out." << endl;
-  }
 
-  return HT;
+  return hashTABLE;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
   while(HASH[address] != probeTHIS){
@@ -159,8 +153,9 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     probe = 0,
     found = 0,
     attempts = 0;
+  randARRAY[MAX_KEYS + 1] = 0;
      
-  while(randARRAY[key] != 0){
+  while(randARRAY[key] != 0 && key < MAX_KEYS){
     address =  HASH(randARRAY[key],tbSIZE);
     while(HT[address] != randARRAY[key] && attempts < tbSIZE){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
