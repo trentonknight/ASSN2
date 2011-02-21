@@ -165,6 +165,7 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     key = key + 2;
     attempts = 0;
   }
+  cout << endl;
   found = probe / found;
 
   cout << "Linear Probing." << endl;
