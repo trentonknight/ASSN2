@@ -16,15 +16,15 @@ const int RANDOM = 30000;
 int randNUMS(int *rand);
 int hashTableSize();
 int HASH(int key,int listSIZE);
-void threeHashMethods(int *randARRAY,int tbSIZE);
-int* openAddressing(int *randARRAY,int tbSIZE);
+void threeHashMethods(int *randARRAY);
+int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int seperateCHAINING();
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe);
 int doubleHASH(int key,int tbSIZE);
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
 int main(){
-  int tbSIZE = 0;
+  
   int randARRAY[MAX_KEYS];
   for(int a = 0; a < MAX_KEYS + 1; a++){
     randARRAY[a] = 0; 
@@ -34,12 +34,9 @@ int main(){
   ///create random array of 5,000 unique int
   ///they will be of values between 1-30000
   randNUMS(randARRAY);
-  ///get hash table size from user
-  ///table must be larger than 6500 int
-  tbSIZE = hashTableSize();
   ///driver function for all three
   ///collision resolution techniques
-  threeHashMethods(randARRAY,tbSIZE);
+  threeHashMethods(randARRAY);
 
   return 0;
 }
@@ -86,27 +83,33 @@ int randNUMS(int *randARRAY){
   
   return *randARRAY;
 }
-void threeHashMethods(int *randARRAY,int tbSIZE){
+void threeHashMethods(int *randARRAY){
   int *HT;
- 
-
-  ///this menu will allow user to select collision method
-  HT = openAddressing(randARRAY,tbSIZE);
-  listSEARCH(randARRAY,HT,tbSIZE);
-}
-int* openAddressing(int *randARRAY,int tbSIZE){
-  int key = 0,
-    address = 0,
-    prb = 0,
-    *hashTABLE;
-  int percent = (5000.00 / tbSIZE) * 100;
-  int load = (5000.00 / tbSIZE) * 10;
-  int loadFACTOR = (tbSIZE * load)/10;
-  randARRAY[MAX_KEYS + 1] = 0;
-  hashTABLE = new(nothrow) int[tbSIZE];
-  for(int a = 0; a < tbSIZE + 1; a++){
-    hashTABLE[a] = 0;
+  int tbSIZE = 0;
+  ///get hash table size from user
+  ///table must be larger than 6500 int
+  tbSIZE = hashTableSize();
+  HT = new(nothrow) int[tbSIZE];
+  if(!HT){
+    cout << "Allocation failure.\n" << endl;
+  } 
+  for(int a = 0; a < tbSIZE; a++){
+    HT[a] = 0;
   }
+  ///this menu will allow user to select collision method
+  HT = openAddressing(randARRAY,tbSIZE,HT);
+  listSEARCH(randARRAY,HT,tbSIZE);
+  delete [] HT;
+}
+int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
+  int key = 0,
+      address = 0,
+      prb = 0;
+  int percent = (5000.00 / tbSIZE) * 100;
+  //int load = (5000.00 / tbSIZE) * 10;
+  //int loadFACTOR = (tbSIZE * load)/10;
+  randARRAY[MAX_KEYS + 1] = 0;
+ 
      
   while(randARRAY[key] != 0 && key < MAX_KEYS){
     ///get a purposed address
@@ -114,7 +117,7 @@ int* openAddressing(int *randARRAY,int tbSIZE){
     ///in array of random int till
     ///empty index is found
     if(randARRAY[key] > tbSIZE){
-    address = HASH(randARRAY[key],loadFACTOR);
+    address = HASH(randARRAY[key],MAX_KEYS);
     }
     ///if address is available 
     ///grab the key
@@ -138,12 +141,12 @@ int* openAddressing(int *randARRAY,int tbSIZE){
   return hashTABLE;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
-  while(HASH[address] != probeTHIS || address < 0){
+  while(HASH[address] != probeTHIS){
     address = (address + 1);
     probe++;
-    if(address >= load){
-      address = 0;
-    }
+ if(address > load){
+        address = 0;
+      }
   }
   return address;
 }
@@ -157,26 +160,32 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
 
   randARRAY[MAX_KEYS + 1] = 0;
      
-  while(randARRAY[key] != 0 && key < MAX_KEYS){
-    address =  HASH(randARRAY[key],tbSIZE);
-    while(HT[address] != randARRAY[key]){
-      address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+  while(randARRAY[key] != 0 && key <= MAX_KEYS){
+    if(HT[address] == randARRAY[key]){
+       verify++;
+      }
+    else{
+    address =  HASH(randARRAY[key],MAX_KEYS);
+    while(HT[address] != randARRAY[key] && probe < tbSIZE * tbSIZE){
+      address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe); 
       found++;
       attempts++;
     }
     if(HT[address] == randARRAY[key]){
       verify++;
+    }
     }    
     key = key + 2;
     attempts = 0;
   }
-  if(verify != 2500){
-    cout << "Warning: " << verify << "matches found out of 2500." << endl; 
-  }
+  
   found = probe / found;
 
   cout << "Linear Probing." << endl;
   cout << probe  << " items examined "; 
   cout << "(avg = " << found << " items examined per search.)" << endl;
+  if(verify != 2500){
+    cout << "Warning: " << verify << " matches found out of 2500." << endl; 
+  }
 }
 
