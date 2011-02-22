@@ -138,7 +138,7 @@ int* openAddressing(int *randARRAY,int tbSIZE){
   return hashTABLE;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
-  while(HASH[address] != probeTHIS){
+  while(HASH[address] != probeTHIS || address < 0){
     address = (address + 1);
     probe++;
     if(address >= load){
@@ -152,24 +152,31 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     address = 0,
     probe = 0,
     found = 0,
-    attempts = 0;
+    attempts = 0,
+    verify = 0;
+
   randARRAY[MAX_KEYS + 1] = 0;
      
   while(randARRAY[key] != 0 && key < MAX_KEYS){
     address =  HASH(randARRAY[key],tbSIZE);
-    while(HT[address] != randARRAY[key] && attempts < tbSIZE){
+    while(HT[address] != randARRAY[key]){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
       found++;
       attempts++;
     }
+    if(HT[address] == randARRAY[key]){
+      verify++;
+    }    
     key = key + 2;
     attempts = 0;
   }
-  cout << endl;
+  if(verify != 2500){
+    cout << "Warning: " << verify << "matches found out of 2500." << endl; 
+  }
   found = probe / found;
 
   cout << "Linear Probing." << endl;
-  cout << probe  << " items examined ";
+  cout << probe  << " items examined "; 
   cout << "(avg = " << found << " items examined per search.)" << endl;
 }
 
