@@ -25,7 +25,6 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
 int main(){
   
- 
   ///driver function for all three
   ///collision resolution techniques
   threeHashMethods();
@@ -44,15 +43,19 @@ int doubleHASH(int key,int tbSIZE){
 }
 int hashTableSize(){
   int userCHOOSE = 0;
+  int percent = 0;
  
   cout << "Enter desired hash table size." << endl;
   cout << "NOTE: hash table size must exceed 6500: " << endl;
   cin >> userCHOOSE;
 
   while(userCHOOSE < 6500){
-    cout << "Whoops " << userCHOOSE << " is above a 75% Load Factor" << endl;
-    cout << "Enter desired hash table size." << endl;
-    cout << "NOTE: hash table size must exceed 6500: " << endl;
+    percent = (5000.00 / userCHOOSE) * 100;
+
+    cout << "Whoops! A Hash Table with an index size of " << userCHOOSE << " is too small" << endl; 
+    cout << "for 5000 entries. The maximum Load Factor is 75%." << endl;
+    cout << "LOAD FACTOR for " << userCHOOSE << " is: " << percent << "%" << endl;
+    cout << "Enter a Hash Table size larger than 6500: " << endl;
     cin >> userCHOOSE;
   }
   return userCHOOSE;
@@ -86,7 +89,7 @@ void threeHashMethods(){
     randARRAY[a] = 0; 
    
   }
-  
+ 
   ///create random array of 5,000 unique int
   ///they will be of values between 1-30000
   randNUMS(randARRAY);
@@ -101,22 +104,20 @@ void threeHashMethods(){
     cout << "was too large." << endl;
   } 
   else{
-  for(int a = 0; a < tbSIZE; a++){
-    HT[a] = 0;
-  }
-  ///this menu will allow user to select collision method
-  HT = openAddressing(randARRAY,tbSIZE,HT);
-  listSEARCH(randARRAY,HT,tbSIZE);
+    for(int a = 0; a < tbSIZE; a++){
+      HT[a] = 0;
+    }
+    ///this menu will allow user to select collision method
+    HT = openAddressing(randARRAY,tbSIZE,HT);
+    listSEARCH(randARRAY,HT,tbSIZE);
   }
   delete [] HT;
 }
 int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
-      address = 0,
-      prb = 0;
+    address = 0,
+    prb = 0;
   int percent = (5000.00 / tbSIZE) * 100;
-  //int load = (5000.00 / tbSIZE) * 10;
-  //int loadFACTOR = (tbSIZE * load)/10;
   randARRAY[MAX_KEYS + 1] = 0;
  
      
@@ -126,7 +127,7 @@ int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
     ///in array of random int till
     ///empty index is found
     if(randARRAY[key] > tbSIZE){
-    address = HASH(randARRAY[key],MAX_KEYS);
+      address = HASH(randARRAY[key],MAX_KEYS);
     }
     ///if address is available 
     ///grab the key
@@ -140,7 +141,7 @@ int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
       hashTABLE[address] = randARRAY[key];
     }
     if(hashTABLE[address] == randARRAY[key]){
-    key++;
+      key++;
     }
   }
   cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
@@ -153,9 +154,9 @@ int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
   while(HASH[address] != probeTHIS){
     address = (address + 1);
     probe++;
- if(address > load){
-        address = 0;
-      }
+    if(address > load){
+      address = 0;
+    }
   }
   return address;
 }
@@ -173,21 +174,21 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   while(randARRAY[key] != 0 && key <= MAX_KEYS){
     address = key;
     if(HT[address] == randARRAY[key]){
-       verify++;
-       noProbe++;
-      }
+      verify++;
+      noProbe++;
+    }
     else{
       address =  HASH(randARRAY[key],MAX_KEYS);
       if(HT[address] == randARRAY[key]){
 	noProbe++;
       }
-    while(HT[address] != randARRAY[key]){
-      address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
-      requiredProbe++;
-    }
-    if(HT[address] == randARRAY[key]){
-      verify++;
-    }
+      while(HT[address] != randARRAY[key]){
+	address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+	requiredProbe++;
+      }
+      if(HT[address] == randARRAY[key]){
+	verify++;
+      }
     }    
     key = key + 2;
   }
