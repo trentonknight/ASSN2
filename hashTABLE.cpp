@@ -16,7 +16,7 @@ const int RANDOM = 30000;
 int randNUMS(int *rand);
 int hashTableSize();
 int HASH(int key,int listSIZE);
-void threeHashMethods(int *randARRAY);
+void threeHashMethods();
 int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int seperateCHAINING();
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe);
@@ -25,18 +25,10 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
 int main(){
   
-  int randARRAY[MAX_KEYS];
-  for(int a = 0; a < MAX_KEYS + 1; a++){
-    randARRAY[a] = 0; 
-   
-  }
-  
-  ///create random array of 5,000 unique int
-  ///they will be of values between 1-30000
-  randNUMS(randARRAY);
+ 
   ///driver function for all three
   ///collision resolution techniques
-  threeHashMethods(randARRAY);
+  threeHashMethods();
 
   return 0;
 }
@@ -56,9 +48,12 @@ int hashTableSize(){
   cout << "Enter desired hash table size." << endl;
   cout << "NOTE: hash table size must exceed 6500: " << endl;
   cin >> userCHOOSE;
-  if(userCHOOSE < 6500){
-    cout << "Whoops " << userCHOOSE << " is to small!" << endl;
-    hashTableSize();
+
+  while(userCHOOSE < 6500){
+    cout << "Whoops " << userCHOOSE << " is above a 75% Load Factor" << endl;
+    cout << "Enter desired hash table size." << endl;
+    cout << "NOTE: hash table size must exceed 6500: " << endl;
+    cin >> userCHOOSE;
   }
   return userCHOOSE;
 }
@@ -83,12 +78,22 @@ int randNUMS(int *randARRAY){
   randARRAY[MAX_KEYS + 1] = 0;
   return *randARRAY;
 }
-void threeHashMethods(int *randARRAY){
+void threeHashMethods(){
   int *HT;
   int tbSIZE = 0;
+  int randARRAY[MAX_KEYS];
+  for(int a = 0; a < MAX_KEYS + 1; a++){
+    randARRAY[a] = 0; 
+   
+  }
+  
+  ///create random array of 5,000 unique int
+  ///they will be of values between 1-30000
+  randNUMS(randARRAY);
   ///get hash table size from user
   ///table must be larger than 6500 int
   tbSIZE = hashTableSize();
+
   HT = new(nothrow) int[tbSIZE];
   if(!HT){
     cout << "ERROR: Allocation failure.\n" << endl;
