@@ -135,7 +135,7 @@ int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
     }
   }
   cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
-  cout << "Load Factor = " << percent << endl;
+  cout << "Load Factor = " << percent << "%" << endl;
   cout << "Results from searching for 2500 items." << endl;
 
   return hashTABLE;
@@ -154,20 +154,20 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
     address = 0,
     probe = 0,
-    attempts = 0,
-    verify = 0;
+    verify = 0,
+    avg = 0;
 
   randARRAY[MAX_KEYS + 1] = 0;
      
   while(randARRAY[key] != 0 && key <= MAX_KEYS){
+    address = key;
     if(HT[address] == randARRAY[key]){
        verify++;
       }
     else{
     address =  HASH(randARRAY[key],MAX_KEYS);
-    while(HT[address] != randARRAY[key] && attempts < tbSIZE){
+    while(HT[address] != randARRAY[key]){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
-      attempts++;
     }
     if(HT[address] == randARRAY[key]){
       verify++;
@@ -176,13 +176,14 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     key = key + 2;
   }
   
-  attempts = verify / attempts;
+  avg = probe / verify;
 
-  cout << "Linear Probing." << endl;
-  cout << verify  << " items examined "; 
-  cout << "(avg = " << attempts << " items examined per search.)" << endl;
+  cout << "<< Linear Probing >>" << endl;
+  cout << probe << " items probed ";
+  cout << verify << " items matched " << endl;
+  cout << "(avg = " << avg << " items examined per search.)" << endl;
   if(verify != 2500){
-    cout << "Warning: " << verify << " matches found out of 2500." << endl; 
+    cout << "Warning: " << probe << " matches found out of 2500." << endl; 
   }
 }
 
