@@ -91,14 +91,18 @@ void threeHashMethods(int *randARRAY){
   tbSIZE = hashTableSize();
   HT = new(nothrow) int[tbSIZE];
   if(!HT){
-    cout << "Allocation failure.\n" << endl;
+    cout << "ERROR: Allocation failure.\n" << endl;
+    cout << "WHOOPS! Most likely your Hash Table ";
+    cout << "was too large." << endl;
   } 
+  else{
   for(int a = 0; a < tbSIZE; a++){
     HT[a] = 0;
   }
   ///this menu will allow user to select collision method
   HT = openAddressing(randARRAY,tbSIZE,HT);
   listSEARCH(randARRAY,HT,tbSIZE);
+  }
   delete [] HT;
 }
 int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
@@ -136,7 +140,7 @@ int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
   cout << "Load Factor = " << percent << "%" << endl;
-  cout << "Results from searching for 2500 items." << endl;
+  cout << "Results from searching for 2500 items in Hash Table:\n" << endl;
 
   return hashTABLE;
 }
@@ -154,6 +158,7 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
     address = 0,
     probe = 0,
+    requiredProbe = 0,
     verify = 0,
     avg = 0;
 
@@ -165,9 +170,10 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
        verify++;
       }
     else{
-    address =  HASH(randARRAY[key],MAX_KEYS);
+      address =  HASH(randARRAY[key],MAX_KEYS);
     while(HT[address] != randARRAY[key]){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+      requiredProbe++;
     }
     if(HT[address] == randARRAY[key]){
       verify++;
@@ -179,9 +185,10 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   avg = probe / verify;
 
   cout << "<< Linear Probing >>" << endl;
-  cout << probe << " items probed ";
+  cout << requiredProbe << " items required probing." << endl;
+  cout << probe << " indexes examined during probe." << endl;
   cout << verify << " items matched " << endl;
-  cout << "(avg = " << avg << " items examined per search.)" << endl;
+  cout << "(avg = " << avg << " indexes probed per search.)" << endl;
   if(verify != 2500){
     cout << "Warning: " << probe << " matches found out of 2500." << endl; 
   }
