@@ -159,6 +159,7 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     address = 0,
     probe = 0,
     requiredProbe = 0,
+    noProbe = 0,
     verify = 0,
     avg = 0;
 
@@ -168,9 +169,13 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
     address = key;
     if(HT[address] == randARRAY[key]){
        verify++;
+       noProbe++;
       }
     else{
       address =  HASH(randARRAY[key],MAX_KEYS);
+      if(HT[address] == randARRAY[key]){
+	noProbe++;
+      }
     while(HT[address] != randARRAY[key]){
       address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
       requiredProbe++;
@@ -185,6 +190,7 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   avg = probe / verify;
 
   cout << "<< Linear Probing >>" << endl;
+  cout << noProbe << " items did not require probe efforts." << endl;
   cout << requiredProbe << " items required probing." << endl;
   cout << probe << " indexes examined during probe." << endl;
   cout << verify << " items matched " << endl;
