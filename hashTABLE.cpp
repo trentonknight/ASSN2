@@ -17,7 +17,9 @@ int randNUMS(int *rand);
 int hashTableSize();
 int HASH(int key,int listSIZE);
 void threeHashMethods();
-int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]);
+int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
+int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
+void openAddressing(int tbSIZE,int randARRAY[]);
 int seperateCHAINING();
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe);
 int doubleHASH(int key,int tbSIZE);
@@ -81,21 +83,8 @@ int randNUMS(int *randARRAY){
   randARRAY[MAX_KEYS + 1] = 0;
   return *randARRAY;
 }
-void threeHashMethods(){
+void openAddressing(int tbSIZE,int randARRAY[]){
   int *HT;
-  int tbSIZE = 0;
-  int randARRAY[MAX_KEYS];
-  for(int a = 0; a < MAX_KEYS + 1; a++){
-    randARRAY[a] = 0; 
-   
-  }
- 
-  ///create random array of 5,000 unique int
-  ///they will be of values between 1-30000
-  randNUMS(randARRAY);
-  ///get hash table size from user
-  ///table must be larger than 6500 int
-  tbSIZE = hashTableSize();
 
   HT = new(nothrow) int[tbSIZE];
   if(!HT){
@@ -108,12 +97,64 @@ void threeHashMethods(){
       HT[a] = 0;
     }
     ///this menu will allow user to select collision method
-    HT = openAddressing(randARRAY,tbSIZE,HT);
+    HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
     listSEARCH(randARRAY,HT,tbSIZE);
   }
   delete [] HT;
 }
-int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
+void threeHashMethods(){
+  int tbSIZE = 0;
+  int randARRAY[MAX_KEYS];
+  for(int a = 0; a < MAX_KEYS + 1; a++){
+    randARRAY[a] = 0; 
+   
+  }
+  ///create random array of 5,000 unique int
+  ///they will be of values between 1-30000
+  randNUMS(randARRAY);
+  ///get hash table size from user
+  ///table must be larger than 6500 int
+  tbSIZE = hashTableSize();
+  openAddressing(tbSIZE,randARRAY); 
+}
+int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
+  int key = 0,
+    address = 0;
+   double  prb = 0;
+  int percent = (5000.00 / tbSIZE) * 100;
+  randARRAY[MAX_KEYS + 1] = 0;
+ 
+     
+  while(randARRAY[key] != 0 && key < MAX_KEYS){
+    ///get a purposed address
+    ///and move through indexes
+    ///in array of random int till
+    ///empty index is found
+    if(randARRAY[key] > tbSIZE){
+      address = HASH(randARRAY[key],MAX_KEYS);
+    }
+    ///if address is available 
+    ///grab the key
+    if(hashTABLE[address] == 0){
+      hashTABLE[address] = randARRAY[key];
+    }
+    ///if a collision is the result run
+    ///a linear probe until available address is found 
+    else{
+      address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
+      hashTABLE[address] = randARRAY[key];
+    }
+    if(hashTABLE[address] == randARRAY[key]){
+      key++;
+    }
+  }
+  cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
+  cout << "Load Factor = " << percent << "%" << endl;
+  cout << "Results from matching 2500 elements in Rand Array with Hash Tables:\n" << endl;
+
+  return hashTABLE;
+}
+int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
    double  prb = 0;
