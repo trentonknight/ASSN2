@@ -85,43 +85,56 @@ int randNUMS(int *randARRAY){
 }
 void openAddressing(int tbSIZE,int randARRAY[]){
   int *HT;
+  int loop = 0;
 
-  HT = new(nothrow) int[tbSIZE];
-  if(!HT){
-    cout << "ERROR: Allocation failure.\n" << endl;
-    cout << "WHOOPS! Most likely your Hash Table ";
-    cout << "was too large." << endl;
-  } 
-  else{
-    for(int a = 0; a < tbSIZE; a++){
-      HT[a] = 0;
+  for(int a = 0; a < 2; a++){
+
+    HT = new(nothrow) int[tbSIZE];
+    if(!HT){
+      cout << "ERROR: Allocation failure.\n" << endl;
+      cout << "WHOOPS! Most likely your Hash Table ";
+      cout << "was too large." << endl;
+    } 
+    else{
+      for(int a = 0; a < tbSIZE; a++){
+	HT[a] = 0;
+      }
+      if(loop == 0){
+	HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
+	cout << "<< Linear Probing >>" << endl;
+	listSEARCH(randARRAY,HT,tbSIZE);
+      }
+      else{       
+	HT = OA_DoubleHash(randARRAY,tbSIZE,HT);
+	cout << "<< Double Hashing >>" << endl;
+	listSEARCH(randARRAY,HT,tbSIZE);
+      }
     }
-    ///this menu will allow user to select collision method
-    HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
-    listSEARCH(randARRAY,HT,tbSIZE);
+    delete [] HT;
+    loop = 1;
+    cout << endl;
   }
-  delete [] HT;
 }
 void threeHashMethods(){
   int tbSIZE = 0;
+  int percent = 0;
   int randARRAY[MAX_KEYS];
   for(int a = 0; a < MAX_KEYS + 1; a++){
     randARRAY[a] = 0; 
    
   }
-  ///create random array of 5,000 unique int
-  ///they will be of values between 1-30000
   randNUMS(randARRAY);
-  ///get hash table size from user
-  ///table must be larger than 6500 int
   tbSIZE = hashTableSize();
+  percent = (5000.00 / tbSIZE) * 100;
+  cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
+  cout << "Load Factor = " << percent << "%" << endl;
+  cout << "Results from matching 2500 elements from Rand Array with Hash Tables:\n" << endl;
   openAddressing(tbSIZE,randARRAY); 
 }
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
-   double  prb = 0;
-  int percent = (5000.00 / tbSIZE) * 100;
+  double  prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
  
      
@@ -148,17 +161,13 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
       key++;
     }
   }
-  cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
-  cout << "Load Factor = " << percent << "%" << endl;
-  cout << "Results from matching 2500 elements in Rand Array with Hash Tables:\n" << endl;
-
+ 
   return hashTABLE;
 }
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
-   double  prb = 0;
-  int percent = (5000.00 / tbSIZE) * 100;
+  double  prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
  
      
@@ -185,10 +194,7 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
       key++;
     }
   }
-  cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
-  cout << "Load Factor = " << percent << "%" << endl;
-  cout << "Results from matching 2500 elements in Rand Array with Hash Tables:\n" << endl;
-
+  
   return hashTABLE;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
@@ -205,7 +211,7 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
     address = 0,
     collision = 0;
- double
+  double
     probe = 0,
     requiredProbe = 0,
     noProbe = 0,
@@ -241,7 +247,6 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   
   avg = 2500 / requiredProbe;
 
-  cout << "<< Linear Probing >>" << endl;
   cout << noProbe << " Matching elements found immediately without probing Hash Table." << endl;
   cout << collision << " Total collisions while probing for match." << endl;
   cout << verify << " Total elements matched between Rand Array and Hash Table." << endl;
