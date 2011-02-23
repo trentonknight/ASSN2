@@ -19,7 +19,7 @@ int HASH(int key,int listSIZE);
 void threeHashMethods();
 int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int seperateCHAINING();
-int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe);
+int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe);
 int doubleHASH(int key,int tbSIZE);
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
 
@@ -115,8 +115,8 @@ void threeHashMethods(){
 }
 int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
-    address = 0,
-    prb = 0;
+    address = 0;
+   double  prb = 0;
   int percent = (5000.00 / tbSIZE) * 100;
   randARRAY[MAX_KEYS + 1] = 0;
  
@@ -146,11 +146,11 @@ int* openAddressing(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   cout << key << " items loaded into a " << tbSIZE << " element hash table." << endl;
   cout << "Load Factor = " << percent << "%" << endl;
-  cout << "Results from searching for 2500 items in Hash Table:\n" << endl;
+  cout << "Results from matching 2500 elements in Rand Array with Hash Tables:\n" << endl;
 
   return hashTABLE;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
+int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
   while(HASH[address] != probeTHIS){
     address = (address + 1);
     probe++;
@@ -163,11 +163,14 @@ int linearPROBE(int address,int *HASH,int probeTHIS,int load,int& probe){
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   int key = 0,
     address = 0,
+    collision = 0;
+ double
     probe = 0,
     requiredProbe = 0,
     noProbe = 0,
     verify = 0,
-    avg = 0;
+    avg = 0,
+    search  = 0;
 
   randARRAY[MAX_KEYS + 1] = 0;
      
@@ -185,22 +188,24 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
       while(HT[address] != randARRAY[key]){
 	address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
 	requiredProbe++;
+        collision = probe;
       }
       if(HT[address] == randARRAY[key]){
 	verify++;
       }
     }    
     key = key + 2;
+    search++;
   }
   
-  avg = probe / verify;
+  avg = 2500 / requiredProbe;
 
   cout << "<< Linear Probing >>" << endl;
-  cout << noProbe << " elements found immediately without probing." << endl;
-  cout << requiredProbe << " elements required probing." << endl;
-  cout << probe << " Total elements examined during probes." << endl;
-  cout << verify << " elements matched " << endl;
-  cout << "(avg = " << avg << " elements probed per random int to find a match.)" << endl;
+  cout << noProbe << " Matching elements found immediately without probing Hash Table." << endl;
+  cout << collision << " Total collisions while probing for match." << endl;
+  cout << verify << " Total elements matched between Rand Array and Hash Table." << endl;
+  cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
+  cout << "(avg = " << avg << " collisions per element.)" << endl;
   if(verify != 2500){
     cout << "Warning: " << probe << " matches found out of 2500." << endl; 
   }
