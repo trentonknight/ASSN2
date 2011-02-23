@@ -196,13 +196,12 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
   avg = probe / verify;
 
   cout << "<< Linear Probing >>" << endl;
-  cout << noProbe << " items did not require probe efforts." << endl;
-  cout << requiredProbe << " items required probing." << endl;
-  cout << probe << " indexes examined during probe." << endl;
-  cout << verify << " items matched " << endl;
-  cout << "(avg = " << avg << " indexes probed per search.)" << endl;
+  cout << noProbe << " elements found immediately without probing." << endl;
+  cout << requiredProbe << " elements required probing." << endl;
+  cout << probe << " Total elements examined during probes." << endl;
+  cout << verify << " elements matched " << endl;
+  cout << "(avg = " << avg << " elements probed per random int to find a match.)" << endl;
   if(verify != 2500){
     cout << "Warning: " << probe << " matches found out of 2500." << endl; 
   }
 }
-
