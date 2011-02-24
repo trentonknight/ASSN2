@@ -22,8 +22,8 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
 void openAddressing(int tbSIZE,int randARRAY[]);
 int seperateCHAINING();
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe);
-int doubleHASH(int key,int tbSIZE);
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE);
+int doubleHASH(int address,int *HASH,int listSIZE,int probe,int search);
+void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call);
 
 int main(){
   
@@ -38,9 +38,15 @@ int HASH(int key,int listSIZE){
   address = key % listSIZE;
   return address;
 }
-int doubleHASH(int key,int tbSIZE){
-  int address = 0;
-  address = (key % (tbSIZE - 2)) + 1;
+
+int doubleHASH(int address,int *HASH,int listSIZE,int probe,int search){  
+  
+  while(HASH[address] != search){
+
+  address = (address % (listSIZE - 2)) + 1;
+ 
+  }
+   
   return address;
 }
 int hashTableSize(){
@@ -86,6 +92,7 @@ int randNUMS(int *randARRAY){
 void openAddressing(int tbSIZE,int randARRAY[]){
   int *HT;
   int loop = 0;
+  bool Call = false;
 
   for(int a = 0; a < 2; a++){
 
@@ -102,12 +109,13 @@ void openAddressing(int tbSIZE,int randARRAY[]){
       if(loop == 0){
 	HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
 	cout << "<< Linear Probing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE);
+	listSEARCH(randARRAY,HT,tbSIZE,Call);
       }
-      else{       
+      else{
+        Call = true;       
 	HT = OA_DoubleHash(randARRAY,tbSIZE,HT);
 	cout << "<< Double Hashing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE);
+	listSEARCH(randARRAY,HT,tbSIZE,Call);
       }
     }
     delete [] HT;
@@ -136,65 +144,31 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
     address = 0;
   double  prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
- 
-     
+      
   while(randARRAY[key] != 0 && key < MAX_KEYS){
-    ///get a purposed address
-    ///and move through indexes
-    ///in array of random int till
-    ///empty index is found
-    if(randARRAY[key] > tbSIZE){
-      address = HASH(randARRAY[key],MAX_KEYS);
-    }
-    ///if address is available 
-    ///grab the key
-    if(hashTABLE[address] == 0){
-      hashTABLE[address] = randARRAY[key];
-    }
-    ///if a collision is the result run
-    ///a linear probe until available address is found 
-    else{
+    address = HASH(randARRAY[key],MAX_KEYS);
+    if(hashTABLE[address] != 0){
       address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
-      hashTABLE[address] = randARRAY[key];
     }
-    if(hashTABLE[address] == randARRAY[key]){
-      key++;
-    }
+    hashTABLE[address] = randARRAY[key];
+    key++;
   }
- 
   return hashTABLE;
 }
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
-  double  prb = 0;
+  double prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
- 
-     
+    
   while(randARRAY[key] != 0 && key < MAX_KEYS){
-    ///get a purposed address
-    ///and move through indexes
-    ///in array of random int till
-    ///empty index is found
-    if(randARRAY[key] > tbSIZE){
-      address = HASH(randARRAY[key],MAX_KEYS);
+    address = HASH(randARRAY[key],MAX_KEYS);
+    if(hashTABLE[address] != 0){
+     address = doubleHASH(address,hashTABLE,tbSIZE,prb,0);
     }
-    ///if address is available 
-    ///grab the key
-    if(hashTABLE[address] == 0){
-      hashTABLE[address] = randARRAY[key];
-    }
-    ///if a collision is the result run
-    ///a linear probe until available address is found 
-    else{
-      address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
-      hashTABLE[address] = randARRAY[key];
-    }
-    if(hashTABLE[address] == randARRAY[key]){
-      key++;
-    }
+    hashTABLE[address] = randARRAY[key];
+    key++;
   }
-  
   return hashTABLE;
 }
 int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
@@ -207,7 +181,7 @@ int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
   }
   return address;
 }
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
+void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call){
   int key = 0,
     address = 0,
     collision = 0;
@@ -233,7 +207,12 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE){
 	noProbe++;
       }
       while(HT[address] != randARRAY[key]){
-	address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+        if(!Call){
+	  address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+	}
+        else{
+	  address = doubleHASH(address,HT,tbSIZE,probe,randARRAY[key]);
+	}
 	requiredProbe++;
         collision = probe;
       }
