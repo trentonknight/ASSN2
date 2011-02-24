@@ -124,7 +124,6 @@ void hashDRIVER(int tbSIZE,int randARRAY[]){
       else{
         separateCHAINING(randARRAY,tbSIZE);
         cout << "<< Separate Chaining >>" << endl;
-        ///listSEARCH(randARRAY,HT,tbSIZE,loop); 
       }
     }
     loop++;
@@ -196,7 +195,7 @@ void separateCHAINING(int *randARRAY,int tbSIZE){
     newADDRESS[address] = newADDRESS[address]->next;
     key++;
   }
-  
+ 
 }
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
@@ -221,10 +220,6 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop){
 	}
         else if(loop == 1){
 	  address = doubleHASH(address,HT,tbSIZE,randARRAY[key]);
-	}
-	else if(loop == 2){
-	  cout << "Separate Chaining in listSearch!" << endl;
-          randARRAY[key] = 0;
 	}
 	requiredProbe++;
       }
