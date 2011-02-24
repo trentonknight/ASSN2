@@ -21,8 +21,8 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
 void openAddressing(int tbSIZE,int randARRAY[]);
 int seperateCHAINING();
-int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe);
-int doubleHASH(int address,int *HASH,int listSIZE,int probe,int search);
+int linearPROBE(int address,int *HASH,int probeTHIS,int load);
+int doubleHASH(int address,int *HASH,int listSIZE,int search);
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call);
 
 int main(){
@@ -39,14 +39,11 @@ int HASH(int key,int listSIZE){
   return address;
 }
 
-int doubleHASH(int address,int *HASH,int listSIZE,int probe,int search){  
-  
-  while(HASH[address] != search){
+int doubleHASH(int address,int *HASH,int listSIZE,int search){  
 
-  address = (address % (listSIZE - 2)) + 1;
- 
-  }
-   
+  while(HASH[address] != search){
+    address = (1 + address % (listSIZE - 2)) + 1;
+  }   
   return address;
 }
 int hashTableSize(){
@@ -142,13 +139,12 @@ void threeHashMethods(){
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
-  double  prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
       
   while(randARRAY[key] != 0 && key < MAX_KEYS){
     address = HASH(randARRAY[key],MAX_KEYS);
     if(hashTABLE[address] != 0){
-      address = linearPROBE(address,hashTABLE,0,tbSIZE,prb);
+      address = linearPROBE(address,hashTABLE,0,tbSIZE);
     }
     hashTABLE[address] = randARRAY[key];
     key++;
@@ -158,23 +154,21 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
-  double prb = 0;
   randARRAY[MAX_KEYS + 1] = 0;
     
   while(randARRAY[key] != 0 && key < MAX_KEYS){
     address = HASH(randARRAY[key],MAX_KEYS);
-    if(hashTABLE[address] != 0){
-     address = doubleHASH(address,hashTABLE,tbSIZE,prb,0);
+    while(hashTABLE[address] != 0){
+      address = doubleHASH(address,hashTABLE,tbSIZE,0);
     }
     hashTABLE[address] = randARRAY[key];
     key++;
   }
   return hashTABLE;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
+int linearPROBE(int address,int *HASH,int probeTHIS,int load){
   while(HASH[address] != probeTHIS){
     address = (address + 1);
-    probe++;
     if(address > load){
       address = 0;
     }
@@ -183,55 +177,41 @@ int linearPROBE(int address,int *HASH,int probeTHIS,int load,double& probe){
 }
 void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call){
   int key = 0,
-    address = 0,
-    collision = 0;
+    address = 0;
   double
-    probe = 0,
     requiredProbe = 0,
-    noProbe = 0,
-    verify = 0,
-    avg = 0,
-    search  = 0;
+    avg = 0;
 
   randARRAY[MAX_KEYS + 1] = 0;
      
   while(randARRAY[key] != 0 && key <= MAX_KEYS){
     address = key;
     if(HT[address] == randARRAY[key]){
-      verify++;
-      noProbe++;
     }
     else{
       address =  HASH(randARRAY[key],MAX_KEYS);
       if(HT[address] == randARRAY[key]){
-	noProbe++;
+
       }
       while(HT[address] != randARRAY[key]){
         if(!Call){
-	  address = linearPROBE(address,HT,randARRAY[key],tbSIZE,probe);
+	  address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
 	}
         else{
-	  address = doubleHASH(address,HT,tbSIZE,probe,randARRAY[key]);
+	  address = doubleHASH(address,HT,tbSIZE,randARRAY[key]);
 	}
 	requiredProbe++;
-        collision = probe;
       }
       if(HT[address] == randARRAY[key]){
-	verify++;
+	
       }
     }    
     key = key + 2;
-    search++;
+   
   }
-  
-  avg = 2500 / requiredProbe;
 
-  cout << noProbe << " Matching elements found immediately without probing Hash Table." << endl;
-  cout << collision << " Total collisions while probing for match." << endl;
-  cout << verify << " Total elements matched between Rand Array and Hash Table." << endl;
+   
+  avg = 2500 / requiredProbe;
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
-  if(verify != 2500){
-    cout << "Warning: " << probe << " matches found out of 2500." << endl; 
-  }
 }
