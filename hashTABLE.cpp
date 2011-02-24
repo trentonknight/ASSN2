@@ -19,16 +19,14 @@ int HASH(int key,int listSIZE);
 void threeHashMethods();
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
-void openAddressing(int tbSIZE,int randARRAY[]);
-int seperateCHAINING();
+void separateCHAINING(int *randARRAY,int tbSIZE);
+void hashDRIVER(int tbSIZE,int randARRAY[]);
 int linearPROBE(int address,int *HASH,int probeTHIS,int load);
-int doubleHASH(int address,int *HASH,int listSIZE,int search);
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call);
+int doubleHASH(int key,int *HASH,int listSIZE,int search);
+void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop);
 
 int main(){
   
-  ///driver function for all three
-  ///collision resolution techniques
   threeHashMethods();
 
   return 0;
@@ -38,12 +36,20 @@ int HASH(int key,int listSIZE){
   address = key % listSIZE;
   return address;
 }
+int doubleHASH(int key,int *HASH,int listSIZE,int search){  
 
-int doubleHASH(int address,int *HASH,int listSIZE,int search){  
-
-  while(HASH[address] != search){
-    address = (1 + address % (listSIZE - 2)) + 1;
+  while(HASH[key] != search){
+    key = (1 + key % (listSIZE - 2)) + 1;
   }   
+  return key;
+}
+int linearPROBE(int address,int *HASH,int probeTHIS,int load){
+  while(HASH[address] != probeTHIS){
+    address = (address + 1);
+    if(address > load){
+      address = 0;
+    }
+  }
   return address;
 }
 int hashTableSize(){
@@ -86,12 +92,12 @@ int randNUMS(int *randARRAY){
   randARRAY[MAX_KEYS + 1] = 0;
   return *randARRAY;
 }
-void openAddressing(int tbSIZE,int randARRAY[]){
+void hashDRIVER(int tbSIZE,int randARRAY[]){
   int *HT;
   int loop = 0;
-  bool Call = false;
+  
 
-  for(int a = 0; a < 2; a++){
+  for(int a = 0; a < 3; a++){
 
     HT = new(nothrow) int[tbSIZE];
     if(!HT){
@@ -106,17 +112,22 @@ void openAddressing(int tbSIZE,int randARRAY[]){
       if(loop == 0){
 	HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
 	cout << "<< Linear Probing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE,Call);
+	listSEARCH(randARRAY,HT,tbSIZE,loop);
+        delete [] HT;
       }
-      else{
-        Call = true;       
+      else if(loop == 1){      
 	HT = OA_DoubleHash(randARRAY,tbSIZE,HT);
 	cout << "<< Double Hashing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE,Call);
+	listSEARCH(randARRAY,HT,tbSIZE,loop);
+        delete [] HT;
+      }
+      else{
+        separateCHAINING(randARRAY,tbSIZE);
+        cout << "<< Separate Chaining >>" << endl;
+        ///listSEARCH(randARRAY,HT,tbSIZE,loop); 
       }
     }
-    delete [] HT;
-    loop = 1;
+    loop++;
     cout << endl;
   }
 }
@@ -134,7 +145,7 @@ void threeHashMethods(){
   cout << "5000 items loaded into a " << tbSIZE << " element hash table." << endl;
   cout << "Load Factor = " << percent << "%" << endl;
   cout << "Results from matching 2500 elements from Rand Array with Hash Tables:\n" << endl;
-  openAddressing(tbSIZE,randARRAY); 
+  hashDRIVER(tbSIZE,randARRAY); 
 }
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
@@ -166,16 +177,28 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,int load){
-  while(HASH[address] != probeTHIS){
-    address = (address + 1);
-    if(address > load){
-      address = 0;
+void separateCHAINING(int *randARRAY,int tbSIZE){
+  int key = 0,
+    address = 0;
+  randARRAY[MAX_KEYS + 1] = 0;
+  TABLE *newADDRESS[tbSIZE];
+    
+  while(randARRAY[key] != 0 && key < MAX_KEYS){
+    address = HASH(randARRAY[key],MAX_KEYS);
+    if(newADDRESS[address] != 0){
+      newADDRESS[address] = new TABLE;
+      newADDRESS[address]->key = randARRAY[key];
     }
+    else{
+      newADDRESS[address] = new TABLE;
+      newADDRESS[address]->key = randARRAY[key];
+    }
+    newADDRESS[address] = newADDRESS[address]->next;
+    key++;
   }
-  return address;
+  
 }
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call){
+void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
     address = 0;
   double
@@ -191,26 +214,26 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE,bool Call){
     else{
       address =  HASH(randARRAY[key],MAX_KEYS);
       if(HT[address] == randARRAY[key]){
-
       }
       while(HT[address] != randARRAY[key]){
-        if(!Call){
+        if(loop == 0){
 	  address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
 	}
-        else{
+        else if(loop == 1){
 	  address = doubleHASH(address,HT,tbSIZE,randARRAY[key]);
+	}
+	else if(loop == 2){
+	  cout << "Separate Chaining in listSearch!" << endl;
+          randARRAY[key] = 0;
 	}
 	requiredProbe++;
       }
-      if(HT[address] == randARRAY[key]){
-	
+      if(HT[address] == randARRAY[key]){	
       }
     }    
-    key = key + 2;
-   
+    key = key + 2; 
   }
-
-   
+  
   avg = 2500 / requiredProbe;
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
