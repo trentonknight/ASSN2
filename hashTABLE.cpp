@@ -20,12 +20,12 @@ int HASH(int key,int listSIZE);
 void threeHashMethods();
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
-TABLE* separateCHAINING(int *randARRAY,int tbSIZE);
+TABLE** separateCHAINING(int *randARRAY,int tbSIZE);
 void hashDRIVER(int tbSIZE,int randARRAY[]);
 int linearPROBE(int address,int *HASH,int probeTHIS,int load);
 int doubleHASH(int key,int *HASH,int listSIZE,int search);
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop);
-void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO);
+void tableTWO_MATCH(int *randARRAY,TABLE* HT_TWO[]);
 
 int main(){
   
@@ -95,8 +95,7 @@ int randNUMS(int *randARRAY){
   return *randARRAY;
 }
 void hashDRIVER(int tbSIZE,int randARRAY[]){
-  int *HT;
-  TABLE *HT_TWO; 
+  int *HT; 
   int loop = 0;
   
 
@@ -125,8 +124,8 @@ void hashDRIVER(int tbSIZE,int randARRAY[]){
         delete [] HT;
       }
       else{
-        HT_TWO = separateCHAINING(randARRAY,tbSIZE);
         cout << "<< Separate Chaining >>" << endl;
+        tableTWO_MATCH(randARRAY,separateCHAINING(randARRAY,tbSIZE));
       }
     }
     loop++;
@@ -179,7 +178,7 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
-TABLE* separateCHAINING(int *randARRAY,int tbSIZE){
+TABLE** separateCHAINING(int *randARRAY,int tbSIZE){
   int key = 0,
     address = 0,
     collisions = 0;
@@ -210,7 +209,7 @@ TABLE* separateCHAINING(int *randARRAY,int tbSIZE){
     }
     key++;  
   }
-  return *head;
+  return head;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
@@ -248,8 +247,8 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
-void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO){
-
+void tableTWO_MATCH(int *randARRAY,TABLE* HT_TWO[]){
+  cout << "check" << endl;
 
 
 }
