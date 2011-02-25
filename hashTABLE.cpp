@@ -9,6 +9,7 @@ using namespace std;
 struct TABLE{
   int key;
   TABLE* next;
+  TABLE* last;
 };
 const int MAX_KEYS = 5000;
 const int RANDOM = 30000;
@@ -180,33 +181,39 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
 }
 TABLE* separateCHAINING(int *randARRAY,int tbSIZE){
   int key = 0,
-    address = 0;
-  int a = 0;
+    address = 0,
+    collisions = 0;
   randARRAY[MAX_KEYS + 1] = 0;
   TABLE *newADDRESS[tbSIZE];
   TABLE *head[tbSIZE];
   newADDRESS[tbSIZE] = new TABLE();
   head[tbSIZE] = new TABLE();
 
-  for(a = 0; a < tbSIZE; a++){
+ for(int a = 0; a < tbSIZE; a++){
    newADDRESS[a] = NULL;
    head[a] = NULL;
   }
     
   while(randARRAY[key] != 0){
     address = HASH(randARRAY[key],MAX_KEYS);
-    if(newADDRESS[address] == 0){
     newADDRESS[address] = new TABLE;
-    head[address] = new TABLE;
     newADDRESS[address]->key = randARRAY[key];
-    newADDRESS[address]->next = head[address]->next;
-    newADDRESS[address] = newADDRESS[address]->next;
-    key++;
+    newADDRESS[address]->next = 0;
+    if(head[address] != 0){
+      ///head[address]->last = new TABLE;
+      head[address]->last = head[address];
+      head[address]->next = newADDRESS[address];
+      head[address] = head[address]->last;
+      cout << "collision: " << address << endl;
+      collisions++;
     }
     else{
-    newADDRESS[address] = newADDRESS[address]->next;
+      head[address] = newADDRESS[address];
     }
-    }
+    key++;  
+     
+  }
+  cout << "Total collisions: " << collisions << endl;
   return *head;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
