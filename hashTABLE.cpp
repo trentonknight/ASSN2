@@ -200,20 +200,16 @@ TABLE* separateCHAINING(int *randARRAY,int tbSIZE){
     newADDRESS[address]->key = randARRAY[key];
     newADDRESS[address]->next = 0;
     if(head[address] != 0){
-      ///head[address]->last = new TABLE;
       head[address]->last = head[address];
       head[address]->next = newADDRESS[address];
       head[address] = head[address]->last;
-      cout << "collision: " << address << endl;
       collisions++;
     }
     else{
       head[address] = newADDRESS[address];
     }
     key++;  
-     
   }
-  cout << "Total collisions: " << collisions << endl;
   return *head;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
