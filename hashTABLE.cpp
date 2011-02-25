@@ -248,7 +248,23 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
-  cout << "check" << endl;
+  int requiredProbe = 0,
+    key = 0,
+    address = 0,
+    matched = 0;
 
-
+  while(randARRAY[key] != 0 && key <= MAX_KEYS){
+    address = HASH(randARRAY[key],MAX_KEYS);
+    while(HT_TWO[address]->key != randARRAY[key] && HT_TWO[address]->next != 0){
+      HT_TWO[address] = HT_TWO[address]->next;
+      requiredProbe++;  
+    }
+    if(HT_TWO[address]->key == randARRAY[key]){
+      matched++;
+    }
+     key = key + 2;
+  }//end first while 
+  cout << "required probe: " << requiredProbe << endl;
+  cout << "matched: " << matched << endl;
+  
 }
