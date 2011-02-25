@@ -19,11 +19,12 @@ int HASH(int key,int listSIZE);
 void threeHashMethods();
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
-void separateCHAINING(int *randARRAY,int tbSIZE);
+TABLE* separateCHAINING(int *randARRAY,int tbSIZE);
 void hashDRIVER(int tbSIZE,int randARRAY[]);
 int linearPROBE(int address,int *HASH,int probeTHIS,int load);
 int doubleHASH(int key,int *HASH,int listSIZE,int search);
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop);
+void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop);
+void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO);
 
 int main(){
   
@@ -94,6 +95,7 @@ int randNUMS(int *randARRAY){
 }
 void hashDRIVER(int tbSIZE,int randARRAY[]){
   int *HT;
+  TABLE *HT_TWO; 
   int loop = 0;
   
 
@@ -112,17 +114,17 @@ void hashDRIVER(int tbSIZE,int randARRAY[]){
       if(loop == 0){
 	HT = OA_LinearProbe(randARRAY,tbSIZE,HT);
 	cout << "<< Linear Probing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE,loop);
+	tableONE_MATCH(randARRAY,HT,tbSIZE,loop);
         delete [] HT;
       }
       else if(loop == 1){      
 	HT = OA_DoubleHash(randARRAY,tbSIZE,HT);
 	cout << "<< Double Hashing >>" << endl;
-	listSEARCH(randARRAY,HT,tbSIZE,loop);
+	tableONE_MATCH(randARRAY,HT,tbSIZE,loop);
         delete [] HT;
       }
       else{
-        separateCHAINING(randARRAY,tbSIZE);
+        HT_TWO = separateCHAINING(randARRAY,tbSIZE);
         cout << "<< Separate Chaining >>" << endl;
       }
     }
@@ -176,28 +178,38 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
-void separateCHAINING(int *randARRAY,int tbSIZE){
+TABLE* separateCHAINING(int *randARRAY,int tbSIZE){
   int key = 0,
     address = 0;
+  int a = 0;
   randARRAY[MAX_KEYS + 1] = 0;
   TABLE *newADDRESS[tbSIZE];
+  TABLE *head[tbSIZE];
+  newADDRESS[tbSIZE] = new TABLE();
+  head[tbSIZE] = new TABLE();
+
+  for(a = 0; a < tbSIZE; a++){
+   newADDRESS[a] = NULL;
+   head[a] = NULL;
+  }
     
-  while(randARRAY[key] != 0 && key < MAX_KEYS){
+  while(randARRAY[key] != 0){
     address = HASH(randARRAY[key],MAX_KEYS);
-    if(newADDRESS[address] != 0){
-      newADDRESS[address] = new TABLE;
-      newADDRESS[address]->key = randARRAY[key];
-    }
-    else{
-      newADDRESS[address] = new TABLE;
-      newADDRESS[address]->key = randARRAY[key];
-    }
+    if(newADDRESS[address] == 0){
+    newADDRESS[address] = new TABLE;
+    head[address] = new TABLE;
+    newADDRESS[address]->key = randARRAY[key];
+    newADDRESS[address]->next = head[address]->next;
     newADDRESS[address] = newADDRESS[address]->next;
     key++;
-  }
- 
+    }
+    else{
+    newADDRESS[address] = newADDRESS[address]->next;
+    }
+    }
+  return *head;
 }
-void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop){
+void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
     address = 0;
   double
@@ -232,4 +244,9 @@ void listSEARCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   avg = 2500 / requiredProbe;
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
+}
+void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO){
+
+
+
 }
