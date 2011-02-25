@@ -20,12 +20,12 @@ int HASH(int key,int listSIZE);
 void threeHashMethods();
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
-TABLE** separateCHAINING(int *randARRAY,int tbSIZE);
+void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]);
 void hashDRIVER(int tbSIZE,int randARRAY[]);
 int linearPROBE(int address,int *HASH,int probeTHIS,int load);
 int doubleHASH(int key,int *HASH,int listSIZE,int search);
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop);
-void tableTWO_MATCH(int *randARRAY,TABLE* HT_TWO[]);
+void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]);
 
 int main(){
   
@@ -96,6 +96,8 @@ int randNUMS(int *randARRAY){
 }
 void hashDRIVER(int tbSIZE,int randARRAY[]){
   int *HT; 
+  TABLE *head[tbSIZE];
+  head[tbSIZE] = new TABLE();
   int loop = 0;
   
 
@@ -124,8 +126,9 @@ void hashDRIVER(int tbSIZE,int randARRAY[]){
         delete [] HT;
       }
       else{
+        separateCHAINING(randARRAY,tbSIZE,head);
         cout << "<< Separate Chaining >>" << endl;
-        tableTWO_MATCH(randARRAY,separateCHAINING(randARRAY,tbSIZE));
+        tableTWO_MATCH(randARRAY,head);
       }
     }
     loop++;
@@ -178,15 +181,13 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
-TABLE** separateCHAINING(int *randARRAY,int tbSIZE){
+void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
   int key = 0,
     address = 0,
     collisions = 0;
   randARRAY[MAX_KEYS + 1] = 0;
   TABLE *newADDRESS[tbSIZE];
-  TABLE *head[tbSIZE];
   newADDRESS[tbSIZE] = new TABLE();
-  head[tbSIZE] = new TABLE();
 
  for(int a = 0; a < tbSIZE; a++){
    newADDRESS[a] = NULL;
@@ -209,7 +210,6 @@ TABLE** separateCHAINING(int *randARRAY,int tbSIZE){
     }
     key++;  
   }
-  return head;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
@@ -247,7 +247,7 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
-void tableTWO_MATCH(int *randARRAY,TABLE* HT_TWO[]){
+void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
   cout << "check" << endl;
 
 
