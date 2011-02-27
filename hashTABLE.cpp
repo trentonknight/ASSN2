@@ -18,7 +18,7 @@ int randNUMS(int *rand);
 int hashTableSize();
 int HASH(int key,int listSIZE);
 void threeHashMethods();
-int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
+int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]); 
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
 void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]);
 void hashDRIVER(int tbSIZE,int randARRAY[]);
@@ -188,10 +188,13 @@ void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
   randARRAY[MAX_KEYS + 1] = 0;
   TABLE *newADDRESS[tbSIZE];
   newADDRESS[tbSIZE] = new TABLE();
+  TABLE *temp[tbSIZE];
+  temp[tbSIZE] = new TABLE();
 
- for(int a = 0; a < tbSIZE; a++){
-   newADDRESS[a] = NULL;
-   head[a] = NULL;
+  for(int a = 0; a < tbSIZE; a++){
+    newADDRESS[a] = NULL;
+    head[a] = NULL;
+    temp[a] = NULL;
   }
     
   while(randARRAY[key] != 0){
@@ -200,16 +203,21 @@ void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
     newADDRESS[address]->key = randARRAY[key];
     newADDRESS[address]->next = 0;
     if(head[address] != 0){
-      head[address]->last = head[address];
+      temp[address] = head[address];
+      head[address] = head[address]->next;
+      head[address] = newADDRESS[address];
+      head[address]->last = temp[address];
       head[address]->next = newADDRESS[address];
-      head[address] = head[address]->last;
       collisions++;
     }
     else{
       head[address] = newADDRESS[address];
+      head[address]->next = 0;
+      head[address]->last = 0;
     }
     key++;  
   }
+  cout << "total collisions: " << collisions << endl;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
@@ -248,23 +256,27 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
-  int requiredProbe = 0,
-    key = 0,
+  int key = 0,
     address = 0,
-    matched = 0;
+    match = 0,
+    collision = 0;
 
   while(randARRAY[key] != 0 && key <= MAX_KEYS){
     address = HASH(randARRAY[key],MAX_KEYS);
-    while(HT_TWO[address]->key != randARRAY[key] && HT_TWO[address]->next != 0){
-      HT_TWO[address] = HT_TWO[address]->next;
-      requiredProbe++;  
-    }
     if(HT_TWO[address]->key == randARRAY[key]){
-      matched++;
-    }
-     key = key + 2;
-  }//end first while 
-  cout << "required probe: " << requiredProbe << endl;
-  cout << "matched: " << matched << endl;
-  
+      match++;
+    }//end if
+    else{
+      while(HT_TWO[address]->last != NULL){
+	HT_TWO[address] = HT_TWO[address]->last;
+        collision++;
+	if(HT_TWO[address]->key == randARRAY[key]){
+	match++;
+	}//end if
+      }//end second while
+    }//end else
+    key = key + 2;
+  }//end outer while
+  cout << "match: " << match << endl;
+  cout << "collsion: " << collision << endl;
 }
