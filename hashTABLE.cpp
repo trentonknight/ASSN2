@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <math.h>
 
 using namespace std;
 
@@ -182,9 +181,8 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
 }
 void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
   int key = 0,
-    address = 0,
-    collisions = 0,
-    newONE = 0;
+    address = 0;
+
   randARRAY[MAX_KEYS + 1] = 0;
   TABLE *newADDRESS[tbSIZE];
   newADDRESS[tbSIZE] = new TABLE();
@@ -194,26 +192,20 @@ void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
     head[a] = NULL;
   }
     
-  while(randARRAY[key] != 0){
+  while(randARRAY[key] != 0 && key < MAX_KEYS){
     address = HASH(randARRAY[key],MAX_KEYS);
     newADDRESS[address] = new TABLE;
     newADDRESS[address]->key = randARRAY[key];
     if(head[address] != 0){
       newADDRESS[address]->next = head[address]->next;
       head[address]->next = newADDRESS[address];
-      collisions++;
     }
     else{
       newADDRESS[address]->next = head[address];
-      head[address] = newADDRESS[address]; 
-      newONE++;   
+      head[address] = newADDRESS[address];        
     }
     key++;  
   }
-  cout << "total collisions: " << collisions << endl;
-  cout << "new: " << newONE << endl;
-  cout << "added: " << collisions + newONE << endl;
-  cout << "key: " << key << endl;
 }
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
@@ -225,22 +217,18 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   randARRAY[MAX_KEYS + 1] = 0;
      
   while(randARRAY[key] != 0){
-    address = key;
+    
+    address =  HASH(randARRAY[key],MAX_KEYS);
     if(HT[address] == randARRAY[key]){
     }
-    else{
-      address =  HASH(randARRAY[key],MAX_KEYS);
-      if(HT[address] == randARRAY[key]){
+    while(HT[address] != randARRAY[key]){
+      if(loop == 0){
+	address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
       }
-      while(HT[address] != randARRAY[key]){
-        if(loop == 0){
-	  address = linearPROBE(address,HT,randARRAY[key],tbSIZE);
-	}
-        else if(loop == 1){
-	  address = doubleHASH(address,HT,tbSIZE,randARRAY[key]);
-	}
-	requiredProbe++;
+      else if(loop == 1){
+	address = doubleHASH(address,HT,tbSIZE,randARRAY[key]);
       }
+      requiredProbe++;
     }    
     key = key + 2; 
   }
@@ -251,23 +239,27 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
 }
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
   int key = 0,
-    address = 0,
-    match = 0,
-    collision = 0;
- randARRAY[MAX_KEYS + 1] = 0;
+    address = 0;
+  bool found = false;
+  double requiredProbe = 0,
+    avg = 0;
+
+  randARRAY[MAX_KEYS + 1] = 0;
 
   while(randARRAY[key] != 0){
-    address = HASH(randARRAY[key],MAX_KEYS);
-      while(HT_TWO[address]->next != NULL && HT_TWO[address]->key != randARRAY[key]){         
+    address =  HASH(randARRAY[key],MAX_KEYS);
+        while(HT_TWO[address]->next != NULL){         
 	HT_TWO[address] = HT_TWO[address]->next;
+	if(HT_TWO[address]->key == randARRAY[key]){
+	  found = true;
+	}     
       }//end second while 
-     if(HT_TWO[address]->key == randARRAY[key]){
-      match++;      
-    }//end if
-  key = key + 2;
+      if(found == true){
+	requiredProbe++;
+      }
+    key = key + 2;      
   }//end outer while
-  cout << "match: " << match << endl;
-  cout << "collsion: " << collision << endl;
-  cout << "TOTAL: " << match + collision << endl;
-  cout << "key: " << key << endl;
+  avg = 2500 / requiredProbe;
+  cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
+  cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
