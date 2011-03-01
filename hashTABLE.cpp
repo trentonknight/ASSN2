@@ -240,7 +240,6 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
   int key = 0,
     address = 0;
-  bool found = false;
   double requiredProbe = 0,
     avg = 0;
 
@@ -250,13 +249,8 @@ void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
     address =  HASH(randARRAY[key],MAX_KEYS);
         while(HT_TWO[address]->next != NULL){         
 	HT_TWO[address] = HT_TWO[address]->next;
-	if(HT_TWO[address]->key == randARRAY[key]){
-	  found = true;
-	}     
+	requiredProbe++;    
       }//end second while 
-      if(found == true){
-	requiredProbe++;
-      }
     key = key + 2;      
   }//end outer while
   avg = 2500 / requiredProbe;
