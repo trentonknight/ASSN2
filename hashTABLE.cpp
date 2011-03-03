@@ -1,3 +1,16 @@
+/////////////////////////////////////////////////////////////////////////
+///CODE FILENAME: hashTABLE
+///DESCRIPTION: Two hashtables. First HashTable is created using Open 
+///             Adressing twice the first time using a single hash the 
+///             second using a double hash. Second HashTable is created
+///             using Separate Chaining.
+///  DATE:    	02MARCH11
+///  DESIGNER:	Jason N Mansfield
+///  FUNCTIONS: randNUMS(),hashTableSize(),HASH(),threeHashMethods(),
+///             OA_LinearProbe(),OA_DoubleHash(),separateCHAINING(),
+///             hashDRIVER(),linearPROBE(),doubleHASH(),tableONE_MATCH(),
+///             tableTWO_MATCH().
+////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -20,22 +33,50 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]);
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]);
 void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]);
 void hashDRIVER(int tbSIZE,int randARRAY[]);
-int linearPROBE(int address,int *HASH,int probeTHIS,int load);
+int linearPROBE(int address,int *HASH,int probeTHIS,int length);
 int doubleHASH(int key,int *HASH,int listSIZE,int search);
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop);
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]);
-
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	main()
+///  DESCRIPTION: simple main funtion
+///  OUTPUT:   
+///  	Return Val: returns 0 if success
+///  CALLS TO:  threeHashMethod()
+//////////////////////////////////////////////////////////////////////////
 int main(){
   
   threeHashMethods();
 
   return 0;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	HASH()
+///  DESCRIPTION:    basic modulus hashing algorithm
+///  INPUT:
+///  	Parameters: recieves hash key and listsize to create address
+///  	            for hash table.
+///  OUTPUT:   
+///  	Return Val: returns int address
+//////////////////////////////////////////////////////////////////////////
 int HASH(int key,int listSIZE){
   int address = 0;
   address = key % listSIZE;
   return address;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	doubleHASH
+///  DESCRIPTION:      performs another modulus hashing algorithm
+///  INPUT:
+///  	Parameters: recieves previous address created from HASH()
+///  	            with key, search represents int being searched
+///                 for in *HASH array, listSIZE simply represents the
+///                 list size.
+///  OUTPUT:   
+///  	Return Val: int key
+///  	Parameters: returns address found with matching search 
+///                 (0 if looking for an available index in array)
+//////////////////////////////////////////////////////////////////////////
 int doubleHASH(int key,int *HASH,int listSIZE,int search){  
 
   while(HASH[key] != search){
@@ -43,15 +84,34 @@ int doubleHASH(int key,int *HASH,int listSIZE,int search){
   }   
   return key;
 }
-int linearPROBE(int address,int *HASH,int probeTHIS,int load){
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:  linearPROBE()
+///  DESCRIPTION: incremently checkes each and every index for available
+///               empty memory in array.
+///  INPUT:
+///  	Parameters: address: current address
+///  	            *HASH: array being used
+///                 probeTHIS: int being searched for (0 if looking for empty index)
+///                 length: Hash Table size
+///  OUTPUT:   
+///  	Return Val: address that has found probeTHIS integer.
+//////////////////////////////////////////////////////////////////////////
+int linearPROBE(int address,int *HASH,int probeTHIS,int length){
   while(HASH[address] != probeTHIS){
     address = (address + 1);
-    if(address > load){
+    if(address > length){
       address = 0;
     }
   }
   return address;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	hashTableSize()
+///  DESCRIPTION:  requests users desired size Hash Table and returns int
+///  OUTPUT:   
+///  	Return Val: int value of users requested hash table size.
+///  	Parameters: userCHOOSE
+//////////////////////////////////////////////////////////////////////////
 int hashTableSize(){
   int userCHOOSE = 0;
   int percent = 0;
@@ -71,6 +131,15 @@ int hashTableSize(){
   }
   return userCHOOSE;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	randNUMS()
+///  DESCRIPTION:     Creates array of random numbers
+///  INPUT:
+///  	Parameters: empty array *randARRAY
+///  OUTPUT:   
+///  	Return Val: Array with 5000 indexes with random int.
+///     Parameters: *randARRAY 
+//////////////////////////////////////////////////////////////////////////
 int randNUMS(int *randARRAY){
   ///temporary fix for randARRAY array of numbers till hash is running
   int check = 0;
@@ -92,6 +161,20 @@ int randNUMS(int *randARRAY){
   randARRAY[MAX_KEYS + 1] = 0;
   return *randARRAY;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION: hashDRIVER
+///  DESCRIPTION:  driver function that calls to the functions used to create
+///                the hash table then the function that reads and veriffies
+///                the created hash tables.
+///  INPUT:
+///  	Parameters: *HT pointer to arrays.
+///                 *head pointer to array of linked list.
+///                  tbSIZE: size requested for hash table size.
+///                  randARRAY: the random array of 5000 int used 
+///                  for data in all hash tables created.
+///  OUTPUT:   
+///  	Return Val: Passes created *HT and *head to proper functions.
+//////////////////////////////////////////////////////////////////////////
 void hashDRIVER(int tbSIZE,int randARRAY[]){
   int *HT; 
   TABLE *head[tbSIZE];
@@ -133,6 +216,18 @@ void hashDRIVER(int tbSIZE,int randARRAY[]){
     cout << endl;
   }
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:  threeHashMethod()
+///  DESCRIPTION: assists in collecting data regarding hash table size and
+///               indexes.
+///  INPUT:
+///  	Parameters: randARRAY: gets random array
+///                 tbSIZE: size of hash table
+///                 percent: formula calculates Load Factor 
+///  OUTPUT:   
+///  	Return Val: passes table size and random array to hashDRIVER
+///  CALLS TO: randNUMS(),hashTableSize(), hashDRIVER().
+//////////////////////////////////////////////////////////////////////////
 void threeHashMethods(){
   int tbSIZE = 0;
   int percent = 0;
@@ -149,6 +244,18 @@ void threeHashMethods(){
   cout << "Results from matching 2500 elements from Rand Array with Hash Tables:\n" << endl;
   hashDRIVER(tbSIZE,randARRAY); 
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	OA_LinearProbe()
+///  DESCRIPTION:  Open Addressing with use of Linear Probe
+///  INPUT:
+///  	Parameters: *randARRAY: array of random int
+///                 tbSIZE: requested hash table size
+///                 hashTABLE[] empty array for hash table
+///  OUTPUT:   
+///  	Return Val: hashTABLE: hash table with hashed data from 
+///                 random array.
+///  CALLS TO:  linearPROBE()
+//////////////////////////////////////////////////////////////////////////
 int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
@@ -164,6 +271,18 @@ int* OA_LinearProbe(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	OA_DoubleHash()
+///  DESCRIPTION:  Open Addressing with use of doubleHASH
+///  INPUT:
+///  	Parameters: *randARRAY: array of random int
+///                 tbSIZE: requested hash table size
+///                 hashTABLE[] empty array for hash table
+///  OUTPUT:   
+///  	Return Val: hashTABLE: hash table with hashed data from 
+///                 random array.
+///  CALLS TO: doubleHASH()
+//////////////////////////////////////////////////////////////////////////
 int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   int key = 0,
     address = 0;
@@ -179,6 +298,19 @@ int* OA_DoubleHash(int *randARRAY,int tbSIZE,int hashTABLE[]){
   }
   return hashTABLE;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	separateCHAINING()
+///  DESCRIPTION:   Uses seperate chaining to create single linked list
+///                 of data. Linked list is used for collisions.
+///  INPUT:
+///  	Parameters: *randARRAY: array of random int
+///                 tbSIZE: requested hash table size
+///                 *head[] empty array of struct TABLE
+///                 for linked list.
+///  OUTPUT:   
+///  	Return Val: *head becomes an array of linked list data containing
+///                  random array int.
+//////////////////////////////////////////////////////////////////////////
 void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
   int key = 0,
     address = 0;
@@ -207,6 +339,19 @@ void separateCHAINING(int *randARRAY,int tbSIZE,TABLE *head[]){
     key++;  
   }
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:  tableONE_MATCH()
+///  DESCRIPTION:  Matches original random array data against newly created *HT hash
+///                table.
+///  INPUT:
+///  	Parameters: randARRAY: original random array of int used to load hash table
+///                 *HT: freshly created hash table containing random array 
+///                 tbSIZE: hash table size
+///                 loop: assists hashDRIVER function with reuse of tableONE_MATCH
+///                 0 allows call to linearPROBE on first call
+///                 1 allows call to doubleHASH on second call
+///  CALLS TO:  linearPROBE(), doubleHASH(), HASH()
+//////////////////////////////////////////////////////////////////////////
 void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   int key = 0,
     address = 0;
@@ -237,6 +382,15 @@ void tableONE_MATCH(int *randARRAY,int *HT,int tbSIZE,int loop){
   cout << requiredProbe << " elements required probing to find match in Hash Table." << endl;
   cout << "(avg = " << avg << " collisions per element.)" << endl;
 }
+///////////////////////////////////////////////////////////////////////////
+///  FUNCTION:	tableTWO_MATCH()
+///  DESCRIPTION:  Traverses and matches original random array with freshly created
+///                linked list of random data.
+///  INPUT:
+///  	Parameters: *randARRAY: original random array used to make hashed linked list
+///                 *HT_TWO: freshly created linked list containing hashed data
+///  CALLS TO: HASH()               
+//////////////////////////////////////////////////////////////////////////
 void tableTWO_MATCH(int *randARRAY,TABLE *HT_TWO[]){
   int key = 0,
     address = 0;
