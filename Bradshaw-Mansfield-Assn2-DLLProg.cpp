@@ -56,7 +56,7 @@ int* OA_LinearProbe  (int *randArray,int tbSize,int hashTable[]);
 void OA_DoubleHash   (int *randArray,int tbSize,int hashTable[], 
                       bool& infiniteLoop);
 void SeparateChaining(int *randArray,int tbSize,TABLE chainingArray[]);
-void HashDriver      (int tbSize,int randArray[], double loadFactor);
+int HashDriver      (int tbSize,int randArray[], double loadFactor);
 void LinearProbe     (int& address,int hashTable[],int probeThis,int length, 
                       int& colCount);
 int  DoubleHash      (int key, int listSize);
@@ -255,11 +255,17 @@ void ThreeHashMethods()
 ///                  TableTwoMatch()
 ///  IMPLEMENTED BY: Jason Mansfield
 ////////////////////////////////////////////////////////////////////////////////
-void HashDriver(int tbSize, int randArray[], double loadFactor)
+int HashDriver(int tbSize, int randArray[], double loadFactor)
 {
   int    *ht = NULL,                  //hash table
          colCount;                    //collision count
-  TABLE  chainingArray[tbSize];
+  TABLE *chainingArray;
+  try{
+    chainingArray = new TABLE[tbSize];
+  }catch (bad_alloc xa){
+    cout << "Allocation Failure\n";
+    return 1;
+  }
   bool   infiniteLoop;   
 
   for(int loop = 0; loop < NUM_PROBING_LOOPS; loop++){
@@ -307,7 +313,7 @@ void HashDriver(int tbSize, int randArray[], double loadFactor)
     }
     cout << endl;
   }
-  return;
+  return 0;
 }
        
 ////////////////////////////////////////////////////////////////////////////////
