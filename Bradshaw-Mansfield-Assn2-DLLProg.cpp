@@ -260,12 +260,12 @@ int HashDriver(int tbSize, int randArray[], double loadFactor)
   int    *ht = NULL,                  //hash table
          colCount;                    //collision count
   TABLE *chainingArray;
-  try{
+  //try{
     chainingArray = new TABLE[tbSize];
-  }catch (bad_alloc xa){
-    cout << "Allocation Failure\n";
-    return 1;
-  }
+    //}catch (bad_alloc xa){
+    //cout << "Allocation Failure\n";
+    //return 1;
+    // }
   bool   infiniteLoop;   
 
   for(int loop = 0; loop < NUM_PROBING_LOOPS; loop++){

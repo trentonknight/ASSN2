@@ -1,0 +1,679 @@
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp}{
+\section{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp File Reference}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp}\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+}
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$iomanip$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$cstdlib$>$}\par
+{\ttfamily \#include $<$cmath$>$}\par
+{\ttfamily \#include $<$cstddef$>$}\par
+Include dependency graph for Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{struct_t_a_b_l_e}{TABLE}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad0ff1b56e8aa2267183dc975be2704c3}{HeaderMain} ()
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3}{RandNums} (int $\ast$rand)
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3}{HashTableSize} ()
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ab771aabb4158e3dd9454ff4ff13b0f26}{hash} (int key, int listSize)
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5}{ThreeHashMethods} ()
+\item 
+int $\ast$ \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb}{OA\_\-LinearProbe} (int $\ast$randArray, int tbSize, int hashTable\mbox{[}$\,$\mbox{]})
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083}{OA\_\-DoubleHash} (int $\ast$randArray, int tbSize, int hashTable\mbox{[}$\,$\mbox{]}, bool \&infiniteLoop)
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221}{SeparateChaining} (int $\ast$randArray, int tbSize, \hyperlink{struct_t_a_b_l_e}{TABLE} chainingArray\mbox{[}$\,$\mbox{]})
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60}{HashDriver} (int tbSize, int randArray\mbox{[}$\,$\mbox{]}, double loadFactor)
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc}{LinearProbe} (int \&address, int hashTable\mbox{[}$\,$\mbox{]}, int probeThis, int length, int \&colCount)
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}{DoubleHash} (int key, int listSize)
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d}{TableOneMatch} (int $\ast$randArray, int $\ast$ht, int tbSize, int loop, int colCount)
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae}{TableTwoMatch} (int $\ast$randArray, \hyperlink{struct_t_a_b_l_e}{TABLE} chainingArray\mbox{[}$\,$\mbox{]}, int colCount, int tbSize)
+\item 
+void \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a836159c17ba22cc964bdb78a64ed7c3b}{DisplayResults} (int colCount, double loadFactor, int loop)
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\item 
+int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash} (int key, int listSize)
+\item 
+int $\ast$ \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aa342d426f7a6fa643a100ba04bc8e46e}{OA\_\-LinearProbe} (int $\ast$randArray, int tbSize, int $\ast$hashTable)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a80697a51c12117a5eae4ada58d27e1c2}{MAX\_\-INT\_\-SIZE} = 30000
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a2e30ee6cd6a71066a4c99da7204c73bd}{MIN\_\-INT\_\-SIZE} = 1
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3e309d0e80c3dd569ed3cfb701075a8}{NUM\_\-PROBING\_\-LOOPS} = 3
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a92e00f871716652e494af2741a4794bd}{MIN\_\-HASH\_\-TABLE\_\-SIZE} = 6500
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad2624222b2a41e40f795baff70c1d20c}{MAX\_\-KEYS} = 5000
+\item 
+const int \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a02ce5f32cab205c8455bd8b976085c50}{NUM\_\-ITEMS\_\-TO\_\-SEARCH} = 2500
+\item 
+const double \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad619de5a53a38d732b9c5da01523a23e}{NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL} = 2500.00
+\item 
+const double \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3a0ca86f28ff2c4d31143f5f3d6ca40a}{MAX\_\-KEYS\_\-DBL} = 5000.00
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a836159c17ba22cc964bdb78a64ed7c3b}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!DisplayResults@{DisplayResults}}
+\index{DisplayResults@{DisplayResults}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{DisplayResults}]{\setlength{\rightskip}{0pt plus 5cm}void DisplayResults (
+\begin{DoxyParamCaption}
+\item[{int}]{colCount, }
+\item[{double}]{loadFactor, }
+\item[{int}]{loop}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a836159c17ba22cc964bdb78a64ed7c3b}
+FUNCTION: DisplayResults DESCRIPTION: Calculates Knuth results per collision type. Displays actual results vs Knuth predicted results INPUT: Parameters: colCount: The count of how many searches were performed. loadFactor: The calculated load factor loop: The loop number to set the display per collision type. IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 394 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a836159c17ba22cc964bdb78a64ed7c3b_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!DoubleHash@{DoubleHash}}
+\index{DoubleHash@{DoubleHash}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{DoubleHash}]{\setlength{\rightskip}{0pt plus 5cm}int DoubleHash (
+\begin{DoxyParamCaption}
+\item[{int}]{key, }
+\item[{int}]{listSize}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}{DoubleHash()} DESCRIPTION: Performs another modulus hashing algorithm. INPUT: Parameters: key: The number slot for hashing listSize: The user selected list size search: The value to search for OUTPUT: Return Val: key: Returns address found with matching search IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 130 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ab771aabb4158e3dd9454ff4ff13b0f26}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!hash@{hash}}
+\index{hash@{hash}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{hash}]{\setlength{\rightskip}{0pt plus 5cm}int hash (
+\begin{DoxyParamCaption}
+\item[{int}]{key, }
+\item[{int}]{listSize}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ab771aabb4158e3dd9454ff4ff13b0f26}
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!Hash@{Hash}}
+\index{Hash@{Hash}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{Hash}]{\setlength{\rightskip}{0pt plus 5cm}int Hash (
+\begin{DoxyParamCaption}
+\item[{int}]{key, }
+\item[{int}]{listSize}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash()} DESCRIPTION: Basic modulus hashing algorithm. INPUT: Parameters: key: The number slot for hashing listSize: The user selected list size OUTPUT: Return Val: address: Hashed address IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 111 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!HashDriver@{HashDriver}}
+\index{HashDriver@{HashDriver}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{HashDriver}]{\setlength{\rightskip}{0pt plus 5cm}int HashDriver (
+\begin{DoxyParamCaption}
+\item[{int}]{tbSize, }
+\item[{int}]{randArray\mbox{[}$\,$\mbox{]}, }
+\item[{double}]{loadFactor}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60}
+FUNCTION: HashDriver DESCRIPTION: Driver function that calls to the functions used to create the hash table, the collision search functions, and the function that displays the results. Function loops 3 times once for each type. INPUT: Parameters: tbSize: Size requested for hash table. randArray: The random array of MAX\_\-KEYS size ints used for data in all hash tables created. loadFactor: The load factor CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb}{OA\_\-LinearProbe()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d}{TableOneMatch()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a836159c17ba22cc964bdb78a64ed7c3b}{DisplayResults()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083}{OA\_\-DoubleHash()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221}{SeparateChaining()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae}{TableTwoMatch()} IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 258 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=388pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=358pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!HashTableSize@{HashTableSize}}
+\index{HashTableSize@{HashTableSize}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{HashTableSize}]{\setlength{\rightskip}{0pt plus 5cm}int HashTableSize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3}{HashTableSize()} DESCRIPTION: Requests users desired size Hash Table and returns int OUTPUT: Return Val: userChoose: Int value of user requested hash table size. IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 178 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=376pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad0ff1b56e8aa2267183dc975be2704c3}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!HeaderMain@{HeaderMain}}
+\index{HeaderMain@{HeaderMain}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{HeaderMain}]{\setlength{\rightskip}{0pt plus 5cm}void HeaderMain (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad0ff1b56e8aa2267183dc975be2704c3}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad0ff1b56e8aa2267183dc975be2704c3}{HeaderMain()} DESCRIPTION: Displays a header to name and author the program for the user to see. IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 92 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=224pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad0ff1b56e8aa2267183dc975be2704c3_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!LinearProbe@{LinearProbe}}
+\index{LinearProbe@{LinearProbe}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{LinearProbe}]{\setlength{\rightskip}{0pt plus 5cm}void LinearProbe (
+\begin{DoxyParamCaption}
+\item[{int \&}]{address, }
+\item[{int}]{hashTable\mbox{[}$\,$\mbox{]}, }
+\item[{int}]{probeThis, }
+\item[{int}]{tbSize, }
+\item[{int \&}]{colCount}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc}
+FUNCTION: LinearProbe DESCRIPTION: Incrementally checks each and every index for available empty memory in array. Keeps counter of number of attempts before valid enry is found. INPUT: Parameters: address: Current address hashTable: Array being used probeThis: Int being searched for 0 if looking for empty index htSize: Hash Table size colCount: The count of how many searches were performed. OUTPUT: Parameters: address: Address of valid location colCount: The count of how many searches were performed. IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 368 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!main@{main}}
+\index{main@{main}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main()} DESCRIPTION: simple main function OUTPUT: Return Val: returns 0 if success CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5}{ThreeHashMethods()} IMPLEMENTED BY: 
+
+Definition at line 77 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!OA\_\-DoubleHash@{OA\_\-DoubleHash}}
+\index{OA\_\-DoubleHash@{OA\_\-DoubleHash}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{OA\_\-DoubleHash}]{\setlength{\rightskip}{0pt plus 5cm}void OA\_\-DoubleHash (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray, }
+\item[{int}]{tbSize, }
+\item[{int}]{hashTable\mbox{[}$\,$\mbox{]}, }
+\item[{bool \&}]{infiniteLoop}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083}
+FUNCTION: OA\_\-DoubleHash DESCRIPTION: Open Addressing with use of DoubleHash INPUT: Parameters: $\ast$randArray: array of random int tbSize: requested hash table size hasTable: empty array for hash table OUTPUT: Parameters: hashTable: hash table with hashed data from random array. infiniteLoop: Bool test for an infinite loop error CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}{DoubleHash()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash()} IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 439 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=278pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a6d73bd0a60e0c71b3df387a63804a083_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aa342d426f7a6fa643a100ba04bc8e46e}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!OA\_\-LinearProbe@{OA\_\-LinearProbe}}
+\index{OA\_\-LinearProbe@{OA\_\-LinearProbe}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{OA\_\-LinearProbe}]{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ OA\_\-LinearProbe (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray, }
+\item[{int}]{tbSize, }
+\item[{int $\ast$}]{hashTable}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aa342d426f7a6fa643a100ba04bc8e46e}
+FUNCTION: OA\_\-LinearProbe DESCRIPTION: Open Addressing with use of Linear Probe INPUT: Parameters: $\ast$randArray: Array of random int tbSize: Requested hash table size hashTable: Empty array for hash table OUTPUT: Return Val: hashTable: Hash table with hashed data from random array. CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc}{LinearProbe()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash()} IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 333 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aa342d426f7a6fa643a100ba04bc8e46e_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!OA\_\-LinearProbe@{OA\_\-LinearProbe}}
+\index{OA\_\-LinearProbe@{OA\_\-LinearProbe}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{OA\_\-LinearProbe}]{\setlength{\rightskip}{0pt plus 5cm}int $\ast$ OA\_\-LinearProbe (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randARRAY, }
+\item[{int}]{tbSIZE, }
+\item[{int}]{hashTABLE\mbox{[}$\,$\mbox{]}}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb}{OA\_\-LinearProbe()} DESCRIPTION: Open Addressing with use of Linear Probe INPUT: Parameters: $\ast$randARRAY: array of random int tbSIZE: requested hash table size hashTABLE\mbox{[}\mbox{]} empty array for hash table OUTPUT: Return Val: hashTABLE: hash table with hashed data from random array. CALLS TO: \hyperlink{hash_t_a_b_l_e_8cpp_a252321f66071adf3a4225754eeed533c}{linearPROBE()} 
+
+Definition at line 259 of file hashTABLE.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=280pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad71094eda822fabc884e72034ac71ddb_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!RandNums@{RandNums}}
+\index{RandNums@{RandNums}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{RandNums}]{\setlength{\rightskip}{0pt plus 5cm}int RandNums (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3}{RandNums()} DESCRIPTION: Creates array of MAX\_\-KEYS amount of random numbers INPUT: Parameters: $\ast$randArray: Empty array OUTPUT: Return Val: $\ast$randArray: with MAX\_\-KEYS amount of random ints. IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 146 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=358pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!SeparateChaining@{SeparateChaining}}
+\index{SeparateChaining@{SeparateChaining}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{SeparateChaining}]{\setlength{\rightskip}{0pt plus 5cm}void SeparateChaining (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray, }
+\item[{int}]{tbSize, }
+\item[{{\bf TABLE}}]{chainingArray\mbox{[}$\,$\mbox{]}}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221}
+FUNCTION: SeparateChaining DESCRIPTION: Uses seperate chaining to create single linked lists of data. Linked list is used for collisions. INPUT: Parameters: $\ast$randArray: Array of random int tbSize: Requested hash table size chainingArray: Empty array of struct \hyperlink{struct_t_a_b_l_e}{TABLE} for linked list. OUTPUT: Parameters: $\ast$chainingArray : becomes an array of linked list data containing random array int. CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash()} IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 483 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3c6053c6e80957893d4a9bb2bb0dc221_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!TableOneMatch@{TableOneMatch}}
+\index{TableOneMatch@{TableOneMatch}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{TableOneMatch}]{\setlength{\rightskip}{0pt plus 5cm}int TableOneMatch (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray, }
+\item[{int $\ast$}]{ht, }
+\item[{int}]{tbSize, }
+\item[{int}]{loop, }
+\item[{int}]{colCount}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d}
+FUNCTION: TableOneMatch DESCRIPTION: Matches original random array data against newly created ht hash table. INPUT: Parameters: randArray: Original random array of int used to load hash table ht: Freshly created hash table containing random array tbSize: Hash table size loop: Assists HashDriver function with reuse of TableOneMatch -\/0 allows call to LinearProbe on first call -\/1 allows call to DoubleHash on second call OUTPUT: Return Value: colCount: The count of how many searches were performed. CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aac1d295acb5e8624df95e8f24fcf39cc}{LinearProbe()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_aba56e572dc851c7863847efa4a3a1f22}{DoubleHash()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ae9957e8e2a204d621e9f9cc2999adf56}{Hash()} IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 539 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=274pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a87dd150179c3fb31ca21d41ca49dd23d_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!TableTwoMatch@{TableTwoMatch}}
+\index{TableTwoMatch@{TableTwoMatch}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{TableTwoMatch}]{\setlength{\rightskip}{0pt plus 5cm}int TableTwoMatch (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{randArray, }
+\item[{{\bf TABLE}}]{chainingArray\mbox{[}$\,$\mbox{]}, }
+\item[{int}]{colCount, }
+\item[{int}]{tbSize}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae}
+FUNCTION: TableTwoMatch DESCRIPTION: Traverses and matches original random array with freshly created inked list of random data. INPUT: Parameters: $\ast$randArray: Original random array used to make hashed linked list chainingArray: Linked list containing hashed data OUTPUT: ReturnValue: colCount: The count of how many searches were performed.
+
+CALLS TO: \hyperlink{hash_t_a_b_l_e_8cpp_a0c29bc1d8c66931331347cede743c2a3}{HASH()} IMPLEMENTED BY: Jeremy Bradshaw 
+
+Definition at line 593 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=242pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3b1f2ded03ac311b3797a7f3c63e9ae_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!ThreeHashMethods@{ThreeHashMethods}}
+\index{ThreeHashMethods@{ThreeHashMethods}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{ThreeHashMethods}]{\setlength{\rightskip}{0pt plus 5cm}void ThreeHashMethods (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5}
+FUNCTION: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5}{ThreeHashMethods()} DESCRIPTION: Calls functions to load randArray numbers, prompt user hash table size, and calls HashDriver. Displays data regarding the load factor, MAX\_\-KEYS and tbSize CALLS TO: \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad94bb5a370d4b069f44ced20f3b6d5a3}{RandNums()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a0ab6301502b50757d27084788bab0db3}{HashTableSize()} \hyperlink{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_abf8c6f979d24b6a41d414e10d7a78a60}{HashDriver()}. IMPLEMENTED BY: Jason Mansfield 
+
+Definition at line 212 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=256pt]{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac4885dc21b261220f2a030b1ad06aec5_icgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a80697a51c12117a5eae4ada58d27e1c2}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!MAX\_\-INT\_\-SIZE@{MAX\_\-INT\_\-SIZE}}
+\index{MAX\_\-INT\_\-SIZE@{MAX\_\-INT\_\-SIZE}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{MAX\_\-INT\_\-SIZE}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf MAX\_\-INT\_\-SIZE} = 30000}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a80697a51c12117a5eae4ada58d27e1c2}
+
+
+Definition at line 34 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad2624222b2a41e40f795baff70c1d20c}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!MAX\_\-KEYS@{MAX\_\-KEYS}}
+\index{MAX\_\-KEYS@{MAX\_\-KEYS}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{MAX\_\-KEYS}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf MAX\_\-KEYS} = 5000}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad2624222b2a41e40f795baff70c1d20c}
+
+
+Definition at line 38 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3a0ca86f28ff2c4d31143f5f3d6ca40a}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!MAX\_\-KEYS\_\-DBL@{MAX\_\-KEYS\_\-DBL}}
+\index{MAX\_\-KEYS\_\-DBL@{MAX\_\-KEYS\_\-DBL}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{MAX\_\-KEYS\_\-DBL}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf MAX\_\-KEYS\_\-DBL} = 5000.00}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a3a0ca86f28ff2c4d31143f5f3d6ca40a}
+
+
+Definition at line 41 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a92e00f871716652e494af2741a4794bd}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!MIN\_\-HASH\_\-TABLE\_\-SIZE@{MIN\_\-HASH\_\-TABLE\_\-SIZE}}
+\index{MIN\_\-HASH\_\-TABLE\_\-SIZE@{MIN\_\-HASH\_\-TABLE\_\-SIZE}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{MIN\_\-HASH\_\-TABLE\_\-SIZE}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf MIN\_\-HASH\_\-TABLE\_\-SIZE} = 6500}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a92e00f871716652e494af2741a4794bd}
+
+
+Definition at line 37 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a2e30ee6cd6a71066a4c99da7204c73bd}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!MIN\_\-INT\_\-SIZE@{MIN\_\-INT\_\-SIZE}}
+\index{MIN\_\-INT\_\-SIZE@{MIN\_\-INT\_\-SIZE}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{MIN\_\-INT\_\-SIZE}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf MIN\_\-INT\_\-SIZE} = 1}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a2e30ee6cd6a71066a4c99da7204c73bd}
+
+
+Definition at line 35 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a02ce5f32cab205c8455bd8b976085c50}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!NUM\_\-ITEMS\_\-TO\_\-SEARCH@{NUM\_\-ITEMS\_\-TO\_\-SEARCH}}
+\index{NUM\_\-ITEMS\_\-TO\_\-SEARCH@{NUM\_\-ITEMS\_\-TO\_\-SEARCH}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{NUM\_\-ITEMS\_\-TO\_\-SEARCH}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf NUM\_\-ITEMS\_\-TO\_\-SEARCH} = 2500}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_a02ce5f32cab205c8455bd8b976085c50}
+
+
+Definition at line 39 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad619de5a53a38d732b9c5da01523a23e}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL@{NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL}}
+\index{NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL@{NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf NUM\_\-ITEMS\_\-TO\_\-SEARCH\_\-DBL} = 2500.00}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ad619de5a53a38d732b9c5da01523a23e}
+
+
+Definition at line 40 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
+\hypertarget{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3e309d0e80c3dd569ed3cfb701075a8}{
+\index{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}!NUM\_\-PROBING\_\-LOOPS@{NUM\_\-PROBING\_\-LOOPS}}
+\index{NUM\_\-PROBING\_\-LOOPS@{NUM\_\-PROBING\_\-LOOPS}!Bradshaw-Mansfield-Assn2-DLLProg.cpp@{Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp}}
+\subsubsection[{NUM\_\-PROBING\_\-LOOPS}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf NUM\_\-PROBING\_\-LOOPS} = 3}}
+\label{_bradshaw-_mansfield-_assn2-_d_l_l_prog_8cpp_ac3e309d0e80c3dd569ed3cfb701075a8}
+
+
+Definition at line 36 of file Bradshaw-\/Mansfield-\/Assn2-\/DLLProg.cpp.
+
