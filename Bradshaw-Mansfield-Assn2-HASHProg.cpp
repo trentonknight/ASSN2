@@ -273,7 +273,7 @@ int HashDriver(int tbSize, int randArray[], double loadFactor)
   TABLE  *chainingArray = new (nothrow) TABLE[tbSize];   
  
   if(!chainingArray){
-    cout << "Allocation Error!" << endl;
+    cout << "Stack Overflow!" << endl;
     return 1;
   }
        
@@ -457,7 +457,7 @@ void OA_DoubleHash(int *randArray,int tbSize,int hashTable[],
     address    = Hash(randArray[key], tbSize);
     errorCount = 0;
     while((hashTable[address] != 0) && !infiniteLoop){
-      address += DoubleHash(address, tbSize);
+      address += DoubleHash(randArray[key], tbSize);
       ++errorCount;
       if (address > tbSize)
         address = address % tbSize;
@@ -569,7 +569,7 @@ int TableOneMatch(int *randArray, int *ht, int tbSize, int loop,
         else if(loop == 1){
           while (ht[address] != randArray[key]) {
             ++colCount;  
-	        address += DoubleHash(address, tbSize);
+	        address += DoubleHash(randArray[key], tbSize);
 	        if (address > tbSize) {          
               address = address % tbSize;
             }

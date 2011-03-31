@@ -1,630 +1,651 @@
-////////////////////////////////////////////////////////////////////////////////
-///CODE FILENAME: Programming Assignment #2 Hashing Program
-///DESCRIPTION:   Program will create MAX_KEYS random integers from 1 to 
-///               MAX_INT_SIZE and store them into a random ordered array. 
-///               Program will prompt user for hash table size. Program will
-///               run use modulo-division as an original hash method. Program
-///               will use three different collision resolution methods. Space
-///               will be dynamically allocated in an array to hold values for
-///               linear probing and double hashing methods. An array of 
-///               structures will be used to hold the hash info for separate
-///               chaining. All MAX_KEYS will be hashed using each method
-///               into the appropriate arrays. Then program will search for
-///               every other element in the arrays. It will keep a count
-///               for each method of how many attempts were needed to find 
-///               the elements searched. It will display the number of elements
-///               searched per collision resolution method and display that 
-///               value alongside a Knuth average calculated per the type of
-///               collision resolution.   
-///  DATE:    	  30 MARCH, 2011
-///  DESIGNER:	  Jason N Mansfield & Jeremy Bradshaw
-///  FUNCTIONS:   HeaderMain()
-///               RandNums()
-///               HashTableSize()
-///               Hash()
-///               ThreeHashMethods()
-///               OA_LinearProbe()
-///               OA_DoubleHash()
-///               SeparateChaining()
-///               HashDriver()
-///               LinearProbe()
-///               DoubleHash()
-///               TableOneMatch()
-///               TableTwoMatch()
-///               DisplayResults()
-////////////////////////////////////////////////////////////////////////////////
+// -----------------------------------------------------------------------------
+// CODE FILENAME: Bradshaw-Assn1-DLLProg.cpp
+// DESCRIPTION: Program will analyze words contained in a text file. The text 
+//              file name will be input via command argument. If no filename is 
+//              passed or the file does not open an error message will show and
+//              the program will exit. Otherwise program will initalize an array
+//              of 26 pointers each representing one letter of the alphabet. 
+//              Each pointer will point to the top of a doubly linked list used
+//              for storage of words that start with the corresponding letter 
+//              of the alphabet. Program will read one word from the text file 
+//              at a time. A running total will be kept for each word read. If 
+//              the word contains a number it will not be stored in the list. 
+//              Otherwise the word will be stripped of anything that is not an 
+//              alphabetical character, hyphen or apostrophe. The word will then
+//              be formatted to all uppercase. The list which it should be 
+//              in will be checked to see if word is a duplicate. If it is not a
+//              duplicate, word will be inserted at the top of the doubly linked
+//              list. After all words have been read, file will be closed. 
+//              Program will then display the results with the filename used
+//              and total number of valid words read. Program will then run 
+//              down each doubly linked list and count up the unique words for 
+//              each letter along with a total unique word counter. A number 
+//              array will track the letter list(s) with the most unique words
+//              in them. The program will run backward on each list and output 
+//              the words in each list along with that letters unique word 
+//              count. After all letter lists have been displayed program will
+//              display the total combined unique words. It will also display 
+//              the highest word count tallied per letter list and display the
+//              letter or letters with the highest count.                
+//
+// DATE: March 17th, 2011
+// DESIGNER: Jeremy Bradshaw
+// CLASS: CS 372
+// FUNCTIONS: InputFileAndOpen - opens file and returns error if needed
+//            HeaderMain - displays header to name and author program
+//            InititalizeLetterArrays - initializes array for linked lists
+//            ProcessFile - reads words from file, calls functions to check for
+//                          digits, format words, find the correct array, check
+//                          it for duplicates, store word into array and close
+//                          file
+//            CheckForDigits - checks words for numbers and returns error if 
+//                             needed
+//            FormatWords - strips words of unnecessary characters and sets 
+//                          them to uppercase
+//            SortToList - finds the correct letter array for the word
+//            CheckForDuplicates -  checks linked list for duplicate words
+//            StoreData - stores valid words on the top of the correct array
+//            DisplayData - displays filename and total word count, keeps total
+//                          unique word count, calls functions to display words
+//                          stored in linked lists, keep unique word counter 
+//                          array, and display letter with the most unique words
+//            LinkedListDisplay - displays words and unique count per letter
+//            LetterAndUniqueWordCount - keeps array of letters with most 
+//                                       unique words
+//            UniqueWordAndLetterDisplay - displays most unique word per letter
+//                                         count and which letter(s) had the 
+//                                         most.
+// -----------------------------------------------------------------------------
 
 
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <cstdlib>
+#include <fstream>
+#include <cctype>
 #include <cmath>
+#include <cstring>
 #include <cstddef>
+#include <cctype>
 using namespace std;
 
-// Constants:
-const int    MAX_INT_SIZE            = 30000,
-             MIN_INT_SIZE            = 1,
-             NUM_PROBING_LOOPS       = 3,
-             MIN_HASH_TABLE_SIZE     = 6500,
-             MAX_KEYS                = 5000,
-             NUM_ITEMS_TO_SEARCH     = 2500;
-const double NUM_ITEMS_TO_SEARCH_DBL = 2500.00,
-             MAX_KEYS_DBL            = 5000.00;
+const int  NUM_OF_LETTERS              = 26,
+           ONE_WORD                    = 1,
+           SIX_WORDS_PER_LINE          = 6,
+           ZERO                        = 0,
+           DEFAULT_UNIQUE_WORD_COUNTER = -1;
+const char UPPER_LETTER_A              = 'A',
+           LOWER_LETTER_a              = 'a';
 
-          
-struct TABLE{
-  TABLE () {key = 0;}     
-  int key;
-  TABLE* next;
-};          
 
-void HeaderMain      (                                          );    
-int  RandNums        (int*                                      );
-int  HashTableSize   (                                          );
-int  hash            (int  , int                                );
-void ThreeHashMethods(                                          );
-int* OA_LinearProbe  (int* , int      , int []                  ); 
-void OA_DoubleHash   (int* , int      , int []   , bool&        );
-void SeparateChaining(int* , int      , TABLE []                );
-int  HashDriver      (int  , int []   , double                  );
-void LinearProbe     (int& , int []   , int      , int   , int& );
-int  DoubleHash      (int  , int      , int                     );
-int  TableOneMatch   (int* , int*     , int      , int   , int  );
-int  TableTwoMatch   (int* , TABLE [] , int      , int          );
-void DisplayResults  (int  , double   , int                     );
+struct listNode{
+  string word;
+  listNode *backward;
+  listNode *forward;
+};
 
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     main()
-///  DESCRIPTION:    simple main function
-///  OUTPUT:   
-///  	Return Val:  returns 0 if success
-///  CALLS TO:       ThreeHashMethods()
-///  IMPLEMENTED BY:
-////////////////////////////////////////////////////////////////////////////////
-int main ()
-{   
+                    
+void InputFileAndOpen           (char* [], ifstream&, bool&);
+void HeaderMain                 ();        
+void InititalizeLetterArrays    (listNode* [] );
+void ProcessFile                (ifstream& , listNode* [], int&, bool&);
+bool CheckForDigits             (string, int);
+void FormatWords                (string&, int& );
+int  SortToList                 (listNode* [], string);
+bool CheckForDuplicates         (int, listNode* [], string);
+void StoreData                  (int, listNode* [], string, bool& );
+void DisplayData                (listNode* [], char* [], int );
+int  LinkedListDisplay          (listNode* [], int );
+void LetterAndUniqueWordCount   (int, int, int&, int&, int []);
+void UniqueWordAndLetterDisplay (int , int , int [], int );
+
+// -----------------------------------------------------------------------------
+// FUNCTION: Main
+// DESCRIPTION: Verifies that a command line argument for a filename was input.
+//              Calls functions to display header, open file, intialize array,
+//              process the file data, and display results data if there is 
+//              no heap error
+// INPUT:
+//     Parameters: - argv - passes in a filename 
+// OUTPUT:
+//     Return Val: 0 for success
+// CALLS TO: InputFileAndOpen
+//           HeaderMain         
+//           InititalizeLetterArrays
+//           ProcessFile 
+//           CheckForDigits 
+//           FormatWords
+//           SortToList
+//           CheckForDuplicates
+//           StoreData
+//           DisplayData 
+//           LinkedListDisplay 
+//           LetterAndUniqueWordCount
+//           UniqueWordAndLetterDisplay 
+// BIG_O: 0(f(n)) = n
+// -----------------------------------------------------------------------------
+
+int main (int argc, char* argv[])
+{
+  //variables
+  ifstream fileData;
+  bool fileError = false,
+       heapError = false;
+  listNode *letterArray[NUM_OF_LETTERS];  
+  int wordCount = 0;                     //keeps total word count
+      
   HeaderMain ();
   
-  ThreeHashMethods();
-    
-  system ("PAUSE") ;
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     HeaderMain()
-///  DESCRIPTION:    Displays a header to name and author the program 
-///                  for the user to see.
-///  IMPLEMENTED BY: Jeremy Bradshaw
-////////////////////////////////////////////////////////////////////////////////
-void HeaderMain ()  
-{
-  cout << "    Programming Assignment #2" << endl;
-  cout << setfill(' ') << setw(16) << right << "by" << endl;
-  cout << setw(27) << "Jason Mansfield & Jeremy Bradshaw" << endl << endl;
-    
-  return;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     Hash()
-///  DESCRIPTION:    Basic modulus hashing algorithm.
-///  INPUT:
-///  	Parameters:  key:      The number slot for hashing 
-///                  listSize: The user selected list size
-///  OUTPUT:   
-///  	Return Val:  address:  Hashed address
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int Hash (int key, int listSize)
-{
-  int address = 0;
-  
-  address = key % listSize;
-  
-  return address;
-}
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     DoubleHash()
-///  DESCRIPTION:    Performs another modulus hashing algorithm.
-///  INPUT:
-///  	Parameters:  key:      The number slot for hashing 
-///                  listSize: The user selected list size
-///                  search:   The value to search for
-///  OUTPUT:   
-///  	Return Val:  key:      Returns address found with matching search 
-///  IMPLEMENTED BY: Jeremy Bradshaw
-////////////////////////////////////////////////////////////////////////////////
-int DoubleHash (int key, int listSize)
-{   
-  key = (key % (listSize - 2)) + 1;
-  
-  return key;
-} 
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     RandNums()
-///  DESCRIPTION:    Creates array of MAX_KEYS amount of random numbers
-///  INPUT:
-///  	Parameters:  *randArray:  Empty array 
-///  OUTPUT:   
-///  	Return Val:  *randArray: with MAX_KEYS amount of random ints.
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int RandNums(int *randArray)
-{
-  int  count   = 0,
-       randNum = 0;
-  bool randNumDuplicate;
-   
-  srand(time(0));
-  
-  while (count < MAX_KEYS) {
-    randNum = rand() % MAX_INT_SIZE;
-    randNumDuplicate = false;
-    
-    for (int index = 0; (index < count) && !randNumDuplicate; index++){
-      if (randArray[index] == randNum) 
-        randNumDuplicate = true;       
-    }
-       
-    if (!randNumDuplicate) {
-      randArray[count] = randNum;
-      ++count;
-    } 
-  }                              
-  return *randArray;
-}
-      
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	    HashTableSize()
-///  DESCRIPTION:   Requests users desired size Hash Table and returns int
-///  OUTPUT:   
-///  	Return Val: userChoose: Int value of user requested hash table size.
-/// IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int HashTableSize()
-{
-  int userChoose = 0;
- 
-  cout << "Enter desired hash table size."               << endl;
-  cout << "NOTE: Hash table size must be "
-       << MIN_HASH_TABLE_SIZE << " or greater: ";
-  cin  >> userChoose;
-  cout << endl;
-
-  while(userChoose < MIN_HASH_TABLE_SIZE){
-
-    cout << "Whoops! A Hash Table with an index size of " 
-         << userChoose << " is too small"                << endl; 
-    cout << "for "     << MAX_KEYS 
-         << " entries. The maximum Load Factor is 75%. " << endl;
-    cout << "Enter a Hash Table size "
-         << MIN_HASH_TABLE_SIZE << " or greater: ";
-    cin  >> userChoose;
-    cout << endl;
+  if (argc < 2) {
+    cout << "**Error! There was no filename argument passed." << endl;
+    fileError = true;
   }
-  return userChoose;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:       ThreeHashMethods()
-///  DESCRIPTION:    Calls functions to load randArray numbers, prompt user
-///                  hash table size, and calls HashDriver. Displays data 
-///                  regarding the load factor, MAX_KEYS and tbSize
-///  CALLS TO:       RandNums()
-///                  HashTableSize()
-///                  HashDriver().
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-void ThreeHashMethods()
-{
-  int    tbSize     = 0,
-         randArray[MAX_KEYS];
-  double loadFactor = 0.00;
-  
-  for(int index = 0; index <= MAX_KEYS; index++){
-    randArray[index] = 0; 
-  }
-   
-  RandNums(randArray);
-  
-  tbSize     = HashTableSize();  
-  loadFactor = MAX_KEYS_DBL / tbSize;
-
-  cout << fixed            << setprecision(2);
-  cout << MAX_KEYS         << " items loaded into a " 
-       << tbSize           << " element hash table."          << endl;
-  cout << "Load Factor = " << loadFactor              << endl << endl;
-  cout << "Results of searching for " 
-       << NUM_ITEMS_TO_SEARCH << " items:"            << endl << endl;
-       
-  HashDriver(tbSize,randArray, loadFactor);
-  
-  return; 
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:       HashDriver
-///  DESCRIPTION:    Driver function that calls to the functions used to 
-///                  create the hash table, the collision search functions, 
-///                  and the function that displays the results. Function 
-///                  loops 3 times once for each type.
-///  INPUT:
-///  	Parameters:  tbSize:      Size requested for hash table.
-///                  randArray:   The random array of MAX_KEYS size ints used 
-///                               for data in all hash tables created.
-///                  loadFactor:  The load factor
-///  CALLS TO:       OA_LinearProbe()
-///                  TableOneMatch()
-///                  DisplayResults()
-///                  OA_DoubleHash()
-///                  SeparateChaining()
-///                  TableTwoMatch()
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int HashDriver(int tbSize, int randArray[], double loadFactor)
-{
-  int    *ht = NULL,                  //hash table
-         colCount;                    //collision count
-  bool   infiniteLoop;                           
-  TABLE  *chainingArray = new (nothrow) TABLE[tbSize];   
- 
-  if(!chainingArray){
-    cout << "Stack Overflow!" << endl;
-    return 1;
-  }
-       
-  for(int loop = 0; loop < NUM_PROBING_LOOPS; loop++){
-
-    colCount = 0;
-    
-    ht = new (nothrow) int[tbSize];
-    
-    if(!ht){
-      cout << "ERROR: Allocation failure.\n"   << endl;
-      cout << "WHOOPS! Most likely your Hash "
-           << "Table was too large."           << endl;
-    } 
-    else{
-      for(int index = 0; index < tbSize; index++){
-    	ht[index] = 0;
-      }
-      
-      if(loop == 0){
-	    ht       = OA_LinearProbe(randArray, tbSize, ht);	    
-	    colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);
-	    DisplayResults(colCount, loadFactor, loop);
-        delete [] ht;
-        ht = NULL;
-      }
-      else if(loop == 1){      
-	    OA_DoubleHash(randArray, tbSize, ht, infiniteLoop);
-	    if (infiniteLoop){
-          cout << "Hashing Error. No data displayed for Double Hashing." 
-               << endl;
-        }                  
-	    else {          
-	      colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);	      
-	      DisplayResults (colCount, loadFactor, loop);
-          delete [] ht;
-          ht = NULL;
-        }
-      }
-      else{
-        SeparateChaining(randArray, tbSize, chainingArray);        
-        colCount = TableTwoMatch(randArray, chainingArray, colCount, tbSize );
-        DisplayResults (colCount, loadFactor, loop);
-      }
-      
-    }
-    cout << endl;
-  }
-  return 0;
-}
-       
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     OA_LinearProbe
-///  DESCRIPTION:    Open Addressing with use of Linear Probe
-///  INPUT:
-///  	Parameters:  *randArray: Array of random int
-///                  tbSize:     Requested hash table size
-///                  hashTable:  Empty array for hash table
-///  OUTPUT:   
-///  	Return Val:  hashTable: Hash table with hashed data from 
-///                             random array.
-///  CALLS TO:       LinearProbe()
-///                  Hash()
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int* OA_LinearProbe(int *randArray, int tbSize, int *hashTable)
-{
-  int key      = 0,
-      address  = 0,
-      nulCount = 0; 
-      
-  while(key < MAX_KEYS){
-    address = Hash(randArray[key],tbSize);
-    if(hashTable[address] != 0){
-      LinearProbe(address, hashTable, 0, tbSize, nulCount);
-    }
-    
-    hashTable[address] = randArray[key];
-    ++key;
-  }
-  return hashTable;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:       LinearProbe
-///  DESCRIPTION:    Incrementally checks each and every index for available
-///                  empty memory in array. Keeps counter of number of 
-///                  attempts before valid enry is found. 
-///  INPUT:
-///  	Parameters:  address:    Current address
-///  	             *hashTable: Array being used
-///                  probeThis:  Int being searched for 
-///                              0 if looking for empty index
-///                  htSize:     Hash Table size
-///                  colCount:   The count of how many searches were performed.   
-///  OUTPUT:   
-///  	Parameters:  address:    Address of valid location
-///                  colCount:   The count of how many searches were performed.
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-void LinearProbe(int& address,int hashTable[],int probeThis,int tbSize, 
-                 int& colCount)
-{
-    
-  while(hashTable[address] != probeThis){
-    ++colCount;
-    ++address;
-    
-    if(address >= tbSize)
-      address = 0;
-      
-  }
-  return;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:       DisplayResults
-///  DESCRIPTION:    Calculates Knuth results per collision type. Displays
-///                  actual results vs Knuth predicted results
-///  INPUT:
-///  	Parameters:  colCount:    The count of how many searches were performed.
-///  	             loadFactor:  The calculated load factor 
-///                  loop:        The loop number to set the display per 
-///                               collision type.       
-///  IMPLEMENTED BY: Jeremy Bradshaw
-////////////////////////////////////////////////////////////////////////////////
-void DisplayResults (int colCount, double loadFactor, int loop)
-{
-  double avg          = 0,
-         knuthResults = 0;
-  
-  
-  if (loop == 0) {
-    knuthResults = 0.5 * (1 + ( 1 / (1 - loadFactor) ) );
-    cout << "<< Linear Probing >>" << endl;
-  }
-  else if (loop == 1) { 
-    knuthResults = (-log(1 - loadFactor)) / loadFactor;
-    cout << "<< Double Hashing >>" << endl;
-  }
-  else {
-    knuthResults = 1 + (loadFactor / 2);
-    cout << "<< Separate Chaining >>" << endl;
-  }                 
-  
-  avg = colCount / NUM_ITEMS_TO_SEARCH_DBL;
-  
-  cout << fixed << setprecision(2) << right << setfill(' ') << setw(7);
-  cout << colCount << " items examined (avg = " 
-       << avg      << " items examined per search)"         << endl;
-  cout << "     vs Knuth predicted avg = " << knuthResults
-       << " items examined per search"                      << endl << endl;
-  
-  return;
-}
-  
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     OA_DoubleHash
-///  DESCRIPTION:    Open Addressing with use of DoubleHash
-///  INPUT:
-///  	Parameters:  *randArray:   array of random int
-///                  tbSize:       requested hash table size
-///                  hasTable:     empty array for hash table
-///  OUTPUT:   
-///  	Parameters:  hashTable:    hash table with hashed data from 
-///                                random array.
-///                  infiniteLoop: Bool test for an infinite loop error
-///  CALLS TO:       DoubleHash()
-///                  Hash()
-///  IMPLEMENTED BY: Jeremy Bradshaw
-////////////////////////////////////////////////////////////////////////////////
-void OA_DoubleHash(int *randArray,int tbSize,int hashTable[], 
-                   bool& infiniteLoop){
-  int key       = 0,
-      address   = 0,
-      errorCount;
-  
-  infiniteLoop = false; 
-    
-  while((key < MAX_KEYS) && !infiniteLoop){
-    address    = Hash(randArray[key], tbSize);
-    errorCount = 0;
-    while((hashTable[address] != 0) && !infiniteLoop){
-      address += DoubleHash(address, tbSize);
-      ++errorCount;
-      if (address > tbSize)
-        address = address % tbSize;
-      if (errorCount > (2 * tbSize))
-        infiniteLoop = true;
-                        
-    }
-    
-    hashTable[address] = randArray[key];
-    ++key;
-  }
-  return;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     SeparateChaining
-///  DESCRIPTION:    Uses seperate chaining to create single linked lists
-///                  of data. Linked list is used for collisions.
-///  INPUT:
-///  	Parameters:  *randArray:     Array of random int
-///                  tbSize:         Requested hash table size
-///                  *chainingArray: Empty array of struct TABLE
-///                                  for linked list.
-///  OUTPUT:   
-///  	Parameters:  *chainingArray : becomes an array of linked list data 
-///                                   containing random array int.
-///  CALLS TO:       Hash()
-///  IMPLEMENTED BY: Jeremy Bradshaw
-////////////////////////////////////////////////////////////////////////////////
-void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
-  int    key       = 0,
-         address   = 0; 
-  TABLE *newPtr    = NULL;
-  bool   heapError = false;
-  
-  while ((key < MAX_KEYS) && !heapError) {
-    address = Hash(randArray[key], tbSize);          
-  
-    if (chainingArray[address].key == 0) { 
-      chainingArray[address].key  = randArray[key];
-      chainingArray[address].next = NULL;
-      ++key;
-    }
-       
-    else if (chainingArray[address].key != 0) {
-      newPtr = new (nothrow) TABLE;   
-      
-      if (newPtr == NULL) {
-        cout << "Heap error - could not allocate memory." << endl;
-        heapError = true;
-      }
-      else {
-        newPtr->key  = randArray[key];
-        newPtr->next = chainingArray[address].next;
-        chainingArray[address].next = newPtr;
-        ++key;
-      }
-    }
-  }       
-
-  return;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:        TableOneMatch
-///  DESCRIPTION:     Matches original random array data against newly created
-///                   *ht hash table.
-///  INPUT:
-///  	Parameters:   randArray: Original random array of int used to load 
-///                              hash table
-///                   *ht:       Freshly created hash table containing 
-///                              random array 
-///                   tbSize:    Hash table size
-///                   loop:      Assists HashDriver function with reuse of 
-///                              TableOneMatch
-///                              -0 allows call to LinearProbe on first call
-///                              -1 allows call to DoubleHash on second call
-///  OUTPUT:
-///     Return Value: colCount:  The count of how many searches were performed. 
-///  CALLS TO:        LinearProbe()
-///                   DoubleHash()
-///                   Hash()
-///  IMPLEMENTED BY: Jason Mansfield
-////////////////////////////////////////////////////////////////////////////////
-int TableOneMatch(int *randArray, int *ht, int tbSize, int loop, 
-                  int colCount)
-{
-  int key     = 0,
-      address = 0;
-    
-  colCount = 0;     //resetting count for each collision method
+  else { 
      
-  while(key < MAX_KEYS){
+    InputFileAndOpen (argv, fileData, fileError);
     
-    address = Hash(randArray[key],tbSize);
+    if (!fileError) {             
+      InititalizeLetterArrays (letterArray );
     
-    if (ht[address] == randArray[key])
-    ++colCount;
-    
-    else {
-      while(ht[address] != randArray[key]){
-        ++colCount;   //one count for not finding it at original element                
-        if(loop == 0) {
-	      LinearProbe(address, ht, randArray[key], tbSize, colCount);
-	      ++colCount; 
-        }
-
+      ProcessFile (fileData, letterArray, wordCount, heapError);
       
-        else if(loop == 1){
-          while (ht[address] != randArray[key]) {
-            ++colCount;  
-	        address += DoubleHash(address, tbSize);
-	        if (address > tbSize) {          
-              address = address % tbSize;
-            }
-          }
-        }
-      }
-    }    
-    key += 2; 
-  }
-  return colCount;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///  FUNCTION:	     TableTwoMatch
-///  DESCRIPTION:    Traverses and matches original random array with freshly 
-///                  created inked list of random data.
-///  INPUT:
-///  	Parameters:  *randArray:     Original random array used to make hashed 
-///                                  linked list
-///                  *chainingArray: Linked list containing hashed data
-///  OUTPUT:
-///     ReturnValue: colCount:  The count of how many searches were performed.
-///                             
-///  CALLS TO:       HASH()
-///  IMPLEMENTED BY: Jeremy Bradshaw              
-////////////////////////////////////////////////////////////////////////////////
-int TableTwoMatch(int *randArray, TABLE chainingArray[], int colCount, 
-                  int tbSize){
-  int   key         = 0,
-        address     = 0;
-  TABLE *tempPtr    = NULL; 
-
-  colCount = 0;                 //reinitializing colCount
-
-  while (key < MAX_KEYS){
-    address =  Hash(randArray[key],tbSize);
-
-    if (chainingArray[address].key == randArray[key]) {
-      ++colCount;   //for the item being found at the first location                  
+      if (!heapError)
+        DisplayData (letterArray, argv, wordCount );
+      
     }
     
-    else {
-      tempPtr  = chainingArray[address].next;
-              
-      while(tempPtr->key  != randArray[key]){
-        ++colCount; //for each time the item is not found                                         
-	    tempPtr = tempPtr->next;        	       
-      }             //end second while 
-      
-      ++colCount;   //for the item being found           
-    }               //end of else statement
+  }
     
-    key += 2; 
-         
-  }                 //end outer while
-
-  return colCount;
+  cout << endl << endl;
+  //system ("PAUSE") ;
+  return 0;
 }
+
+//------------------------------------------------------------------------------
+// FUNCTION: HeaderMain
+// DESCRIPTION: displays the name and author of the program
+// f(n) = x 
+//------------------------------------------------------------------------------
+void HeaderMain () 
+{
+  cout << "CS 372 Programming Assignment 1" << endl;
+  cout << setfill(' ') << setw(16) << right << "by" << endl;
+  cout << setw(22) << "Jeremy Bradshaw" << endl << endl;
+    
+  return;
+}
+
+// -----------------------------------------------------------------------------
+// FUNCTION: InputFileAndOpen
+// DESCRIPTION: Attempts to open file and returns error if unsuccessful.
+// INPUT:
+//     Parameters: argv[] - holds filename
+//     File: File should contain an unspecified amount of unformatted words 
+//           seperated by white spaces
+// OUTPUT:
+//     Parameters: fileData  - contains a valid opened file
+//                 fileError - will return a true value if the file can not be
+//                             opened
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void InputFileAndOpen (char* argv[], ifstream& fileData,
+                       bool& fileError)
+{
+                       
+  fileData.open(argv[1]);
+    
+  if (!fileData) {
+    cout << "Error! Unable to open file " << argv[1] << "." << endl;
+    fileError = true;
+  }
+  
+  return;
+  
+}       
+  
+// -----------------------------------------------------------------------------
+// FUNCTION: InititalizeLetterArrays
+// DESCRIPTION: initializes the array of pointers to linked lists to NULL
+// OUTPUT:
+//     Parameters: letterArray initialized to NULL
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void InititalizeLetterArrays (listNode *letterArray [] )
+{
+  
+  for (int ltrCount = 0; ltrCount < NUM_OF_LETTERS; ltrCount++)    
+    letterArray[ltrCount] = NULL;
+  
+  return;      
+}     
+  
+// -----------------------------------------------------------------------------
+// FUNCTION: ProcessFile
+// DESCRIPTION: Reads words from file, keeps a total word count, and closes 
+//              file. Calls functions to check for digits in
+//              each word, format the words, find the correct array, check it
+//              for duplicates, and store word into the correct array.
+// INPUT:
+//     Parameters: fileData - contains the file information
+//                 letterArray - contains the array of pointers to letters
+//     File: File should contain an unspecified amount of unformatted words 
+//           seperated by white spaces
+// OUTPUT:
+//     Parameters: letterArray - contains the pointers to linked lists per 
+//                               letter
+//                 wordCount   - keeps the total of words read from file that 
+//                               don't contain digits
+//                 heapError   - returns error of out of heap memory
+// CALLS TO: CheckForDigits
+//           FormatWords 
+//           SortToList
+//           CheckForDuplicates
+//           StoreData
+// f(n) = n + 4x
+// -----------------------------------------------------------------------------
+void ProcessFile (ifstream& fileData, listNode* letterArray [], int& wordCount,
+                  bool& heapError)
+{
+  string tempWord;
+  bool wordError,
+       duplicateWord;
+  int wordLen = 0;
+  int sortedArrayNumber = -1; 
+     
+  fileData >> tempWord;
+  
+  while (fileData) {
+    wordLen = tempWord.length();
+    
+    wordError = false; 
+    wordError = CheckForDigits (tempWord, wordLen);
+    
+      if (!wordError) {
+        wordCount++;              
+                      
+        FormatWords(tempWord, wordLen);              
+        
+        sortedArrayNumber = SortToList(letterArray, tempWord); 
+        
+        duplicateWord = false;
+        duplicateWord = CheckForDuplicates(sortedArrayNumber, letterArray, 
+                                           tempWord);
+                           
+        if (!duplicateWord && !heapError)
+          StoreData(sortedArrayNumber, letterArray, tempWord, heapError);
+                       
+      }
+       
+    fileData >> tempWord;
+      
+  }
+  
+  fileData.close();
+  return;
+}    
+   
+// -----------------------------------------------------------------------------
+// FUNCTION: CheckForDigits
+// DESCRIPTION: checks word returns an error if it contains digits
+// INPUT:
+//     Parameters: tempWord - the word to be checked
+//                 wordLen  - the length of the word to be checked
+// OUTPUT:
+//     Return Val: digitError - bool value for error if digits are found
+// f(n) = x 
+// -----------------------------------------------------------------------------
+bool CheckForDigits (string tempWord, int wordLen)
+{
+     
+  bool digitError = false;
+   
+  for (int index = 0; index < wordLen; index++) {
+    if (isdigit( tempWord[index] ) ) 
+      digitError = true;   
+  }
+    
+  return digitError; 
+     
+}  
+   
+// -----------------------------------------------------------------------------
+// FUNCTION: FormatWords
+// DESCRIPTION: removes anything other than letters, apostrophes and hyphens 
+//              from words, then converts them to uppercase
+// INPUT:
+//     Parameters: tempWord - the word to be formatted
+//                 wordLen  - the length of the word
+// OUTPUT:
+//     Parameters: tempWord - the formatted word
+//                 wordLen  - the length of the formatted word 
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void FormatWords (string& tempWord, int& wordLen)
+{
+  
+  for (int index = 0; index < wordLen; index++) {
+            
+    if (isalpha(tempWord[index] ) )
+      tempWord[index] = toupper(tempWord[index]);
+      
+    else if ( (tempWord[index] != '\'') && (tempWord[index] != '-') ) { 
+      tempWord.erase(index, 1);
+      wordLen = tempWord.length();
+      index--;
+    }
+         
+  } 
+  return;
+}           
+   
+// -----------------------------------------------------------------------------
+// FUNCTION: SortToList
+// DESCRIPTION: finds the correct pointer in the array for the word based on 
+//              the first letter of the word.
+// INPUT:
+//     Parameters: letterArray - the array of pointers to the linked lists
+//                 tempWord    - the word to be sorted 
+// OUTPUT:
+//     Return Val: arrayNumber - the number of the array which holds the 
+//                               pointer to the list for the first letter of 
+//                               the word
+// f(n) = x 
+// -----------------------------------------------------------------------------
+int SortToList(listNode *letterArray [], string tempWord)
+{
+  char firstLetter;
+  int arrayNumber = 0;
+  
+  firstLetter = tempWord[0];
+  arrayNumber = firstLetter - UPPER_LETTER_A;
+  
+  return arrayNumber;
+  
+}
+   
+// -----------------------------------------------------------------------------
+// FUNCTION: CheckForDuplicates
+// DESCRIPTION: searches the linked list for a duplicate word and returns an
+//              error if it is a duplicate
+// INPUT:
+//     Parameters: sortedArrayNumber - the number of the array for the correct
+//                                     pointer for the word
+//                 letterArray - the array that holds the pointer to the list
+//                 tempWord -  the word to be checked 
+// OUTPUT:
+//     Return Val: duplicateWordFound - true if there is a duplicate word
+// f(n) = x 
+// -----------------------------------------------------------------------------
+bool CheckForDuplicates( int sortedArrayNumber, listNode *letterArray [],
+                         string tempWord)   
+{
+  listNode *tempPtr = letterArray[sortedArrayNumber];
+  bool duplicateWordFound = false; 
+                         
+  while ((tempPtr != NULL) && (!duplicateWordFound)) {
+    if (tempPtr->word == tempWord)                     
+      duplicateWordFound = true;
+    
+    else      
+    tempPtr = tempPtr->forward;
+
+  }
+  
+  return duplicateWordFound;
+   
+}
+                    
+// -----------------------------------------------------------------------------
+// FUNCTION: StoreData
+// DESCRIPTION: Allocates memory for a new node and stores word at the top of 
+//              the correct linked list. Outputs an error message if no more
+//              memory is available
+// INPUT:
+//     Parameters: sortedArrayNumber - The number of the array which contains
+//                                     the correct pointer for the word.
+//                 letterArray -  the array of pointers to the linked lists
+//                 tempWord - the word to be stored
+// OUTPUT:
+//     Parameters: heapError - returns true if heap is out of memory
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void StoreData( int sortedArrayNumber, listNode *letterArray [], 
+                string tempWord, bool& heapError)  
+{
+  listNode *storePtr = NULL;  
+  
+  storePtr = new (nothrow) listNode;
+  
+  if (storePtr == NULL) { 
+    cout << "Error - out of heap space!!" << endl;
+    heapError = true;
+  }             
+  
+  else {
+    storePtr->forward  = letterArray[sortedArrayNumber];
+    storePtr->word     = tempWord;
+    storePtr->backward = NULL;
+    letterArray[sortedArrayNumber] = storePtr;
+    
+    if (storePtr->forward != NULL)
+      storePtr->forward->backward = storePtr;
+  }
+
+  return; 
+      
+}
+                      
+// -----------------------------------------------------------------------------
+// FUNCTION: DisplayData
+// DESCRIPTION: displays total valid words processed, keeps total unique 
+//              word count. Calls functions to display linked list info, 
+//              keep unique letters and count, and display the unqique word
+//              and letter count
+// INPUT:
+//     Parameters: letterArray - the array of pointers to the linked lists
+//                 argv - to show name of the file
+//                 wordCount - the total valid word count
+// CALLS TO: LinkedListDisplay
+//           LetterAndUniqueWordCount
+//           UniqueWordAndLetterDisplay
+// f(n) = 2n + 2x 
+// -----------------------------------------------------------------------------
+void DisplayData (listNode *letterArray [], char* argv[], int wordCount )
+{
+  int uniqueWordCount    = ZERO,
+      perLetterWordCount = ZERO,
+      tempMax            = ZERO,
+      maxWordCounter     = ZERO,
+      mostUniqueWordLetters[NUM_OF_LETTERS];
+            
+  cout << "Results for " << argv[1] << ": "  
+       << wordCount << " total words processed" << endl << endl;
+  
+  for (int index = 0; index < NUM_OF_LETTERS; index++) {
+    if (letterArray[index] != NULL) {                           
+      perLetterWordCount = LinkedListDisplay(letterArray, index); 
+      LetterAndUniqueWordCount (index, perLetterWordCount,tempMax, 
+                                maxWordCounter, mostUniqueWordLetters);
+      uniqueWordCount += perLetterWordCount;  
+      
+    }                              
+        
+  }
+  
+  UniqueWordAndLetterDisplay (uniqueWordCount, tempMax, mostUniqueWordLetters,
+                              maxWordCounter);
+  return;
+  
+}  
+  
+// -----------------------------------------------------------------------------
+// FUNCTION: LinkedListDisplay
+// DESCRIPTION: function walks forward along each linked list counting up the 
+//              total unique words for that list. Function then walks backwards
+//              along the list displaying each word conained in the list
+// INPUT:
+//     Parameters: letterArray - the array of pointers to the linked list
+//                 index -  contains the number value of the letterArray 
+//                          for the letter desired
+// OUTPUT:
+//     Return Val: wordCountPerLetter - the unique word count per letter of 
+//                                      the list
+// f(n) = 1/13n
+// -----------------------------------------------------------------------------
+int LinkedListDisplay (listNode *letterArray [], int index)
+{
+  listNode *listTempPtr  = NULL;
+  int wordCountPerLetter = ZERO,
+      wordPerLineCounter = ONE_WORD;
+  char upperTempLetter   = ZERO,
+       lowerTempLetter   = ZERO;
+  string wordDisplay     = "words";
+  bool listEnd = false;  
+  
+  lowerTempLetter = LOWER_LETTER_a + index;
+  upperTempLetter = UPPER_LETTER_A + index;
+  
+  listTempPtr = letterArray[index];
+  
+  while ((listTempPtr != NULL) && !listEnd) {
+    ++wordCountPerLetter;
+    
+    if (listTempPtr->forward == NULL)
+      listEnd = true;
+      
+    else   
+      listTempPtr = listTempPtr->forward;
+  }
+  
+  if (wordCountPerLetter == ONE_WORD)
+    wordDisplay = "word"; 
+          
+  cout << wordCountPerLetter  << " "  << wordDisplay << " beginning with '" 
+       << lowerTempLetter     << "'/'"
+       << upperTempLetter     << "':";
+  cout << "       ";                 
+  
+  listEnd = false; 
+      
+  while((listTempPtr != NULL) && !listEnd) {
+    if ( ( (wordPerLineCounter % SIX_WORDS_PER_LINE) == ONE_WORD ) &&
+         (wordPerLineCounter != ZERO) )      
+      cout << endl << "       " ;
+    
+    cout << listTempPtr->word;
+    
+    if (listTempPtr->backward != NULL) {
+      listTempPtr = listTempPtr->backward;
+      cout << ", ";
+    }
+      
+    else {
+      listEnd = true;
+      cout << endl;
+    }
+      
+    ++wordPerLineCounter;
+      
+  }  
+  
+  return wordCountPerLetter;
+  
+}
+    
+// -----------------------------------------------------------------------------
+// FUNCTION: LetterAndUniqueWordCount 
+// DESCRIPTION: finds which linked list(s) contains the most unique words and 
+//              stores the array value corresponding to that letter in the 
+//              mostUniqueWordLetters array
+// INPUT:
+//     Parameters: index - the index value corresponding to the entry in the
+//                         letterArray for each linked list
+//                 perLetterWordCount - total unique word count per letter
+//                 tempMax - the value of the current maximum unique words 
+//                           found in any letter
+//                 maxWordCounter - amount of letters that have for the most
+//                                  unique words
+//                 mostUniqueWordLetters - array that holds the int value of 
+//                                         the location in the letterArray of 
+//                                         letters with the most unique words
+// OUTPUT:
+//     Parameters: tempMax - the value of the current maximum unique words 
+//                           found in any letter
+//                 maxWordCounter - amount of letters that have for the most
+//                                  unique words
+//                 mostUniqueWordLetters - array that holds the int value of 
+//                                         the location in the letterArray of 
+//                                         letters with the most unique words
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void LetterAndUniqueWordCount (int index, int perLetterWordCount, int& tempMax,
+                               int& maxWordCounter, int mostUniqueWordLetters[])
+{
+    
+  if (perLetterWordCount > tempMax) {
+    maxWordCounter = ZERO;
+    
+    for (int reset = 0; reset < NUM_OF_LETTERS; reset++) //resets array to empty 
+      mostUniqueWordLetters[reset] = DEFAULT_UNIQUE_WORD_COUNTER; 
+                        
+    tempMax = perLetterWordCount;                            
+    mostUniqueWordLetters[maxWordCounter] = index;
+    ++maxWordCounter;
+  }
+  
+  else if (perLetterWordCount == tempMax) {  
+    mostUniqueWordLetters[maxWordCounter] = index;
+    ++maxWordCounter; 
+  }
+  
+  return;
+   
+}     
+ 
+// -----------------------------------------------------------------------------
+// FUNCTION: UniqueWordAndLetterDisplay
+// DESCRIPTION: displays the total unique word count, the highest word count
+//              for a letter, and the letter(s) that had that word count
+// INPUT:
+//     Parameters: uniqueWordCount - the total unique word count
+//                 tempMax - the highest unique word count for a letter
+//                 mostUniqueWordLetters - the array that holds the values for
+//                                         the letters with the most unique 
+//                                         words
+//                 maxWordCounter - number of letters that had the most unique
+//                                  words
+// f(n) = x 
+// -----------------------------------------------------------------------------
+void UniqueWordAndLetterDisplay (int uniqueWordCount, int tempMax, 
+                                 int mostUniqueWordLetters[], 
+                                 int maxWordCounter) 
+{
+  char tempLowerLetter,
+       tempUpperLetter;
+   
+  cout << endl;                          
+  cout << "There were " << uniqueWordCount << " unique words in the file." 
+       << endl;
+  cout << "The highest word count was " << tempMax << "." 
+       << endl << endl;
+  cout << "Letter(s) that began words " << tempMax << " times were:"
+       << endl;
+  
+  for (int counter = 0; counter < maxWordCounter; counter ++) {
+    if (mostUniqueWordLetters[counter] != DEFAULT_UNIQUE_WORD_COUNTER) {  
+      tempLowerLetter = mostUniqueWordLetters[counter] + LOWER_LETTER_a;
+      tempUpperLetter = mostUniqueWordLetters[counter] + UPPER_LETTER_A;
+      cout << "      " << "'" << tempLowerLetter << "'/'" << tempUpperLetter
+           << "'" << endl; 
+    }
+    
+  }
+  
+  return;
+  
+}    
+
+
+   
+ 
+      
