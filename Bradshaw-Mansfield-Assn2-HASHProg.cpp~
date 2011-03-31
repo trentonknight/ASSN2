@@ -1,24 +1,37 @@
 ////////////////////////////////////////////////////////////////////////////////
-///CODE FILENAME: Programming Assignment #2
-///DESCRIPTION:   Two hashtables. First HashTable is created using Open 
-///               Adressing twice the first time using a single hash the 
-///               second using a double hash. Second HashTable is created
-///               using Separate Chaining.
-///  DATE:    	  24 MARCH, 2011
+///CODE FILENAME: Programming Assignment #2 Hashing Program
+///DESCRIPTION:   Program will create MAX_KEYS random integers from 1 to 
+///               MAX_INT_SIZE and store them into a random ordered array. 
+///               Program will prompt user for hash table size. Program will
+///               run use modulo-division as an original hash method. Program
+///               will use three different collision resolution methods. Space
+///               will be dynamically allocated in an array to hold values for
+///               linear probing and double hashing methods. An array of 
+///               structures will be used to hold the hash info for separate
+///               chaining. All MAX_KEYS will be hashed using each method
+///               into the appropriate arrays. Then program will search for
+///               every other element in the arrays. It will keep a count
+///               for each method of how many attempts were needed to find 
+///               the elements searched. It will display the number of elements
+///               searched per collision resolution method and display that 
+///               value alongside a Knuth average calculated per the type of
+///               collision resolution.   
+///  DATE:    	  30 MARCH, 2011
 ///  DESIGNER:	  Jason N Mansfield & Jeremy Bradshaw
-///  FUNCTIONS:   headerMain ()
-///               randNUMS()
-///               hashTableSize()
-///               HASH()
-///               threeHashMethods()
+///  FUNCTIONS:   HeaderMain()
+///               RandNums()
+///               HashTableSize()
+///               Hash()
+///               ThreeHashMethods()
 ///               OA_LinearProbe()
 ///               OA_DoubleHash()
-///               separateCHAINING()
-///               hashDRIVER()
-///               linearPROBE()
-///               doubleHASH()
-///               tableONE_MATCH()
-///               tableTWO_MATCH()
+///               SeparateChaining()
+///               HashDriver()
+///               LinearProbe()
+///               DoubleHash()
+///               TableOneMatch()
+///               TableTwoMatch()
+///               DisplayResults()
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -47,24 +60,20 @@ struct TABLE{
   TABLE* next;
 };          
 
-void HeaderMain      ();    
-int  RandNums        (int *rand);
-int  HashTableSize   ();
-int  hash            (int key,int listSize);
-void ThreeHashMethods();
-int* OA_LinearProbe  (int *randArray,int tbSize,int hashTable[]); 
-void OA_DoubleHash   (int *randArray,int tbSize,int hashTable[], 
-                      bool& infiniteLoop);
-void SeparateChaining(int *randArray,int tbSize,TABLE chainingArray[]);
-int HashDriver      (int tbSize,int randArray[], double loadFactor);
-void LinearProbe     (int& address,int hashTable[],int probeThis,int length, 
-                      int& colCount);
-int  DoubleHash      (int key, int listSize);
-int  TableOneMatch   (int *randArray,int *ht,int tbSize, int loop, 
-                      int colCount);
-int  TableTwoMatch   (int *randArray,TABLE chainingArray[], int colCount,
-                      int tbSize);
-void DisplayResults  (int colCount, double loadFactor, int loop);
+void HeaderMain      (                                          );    
+int  RandNums        (int*                                      );
+int  HashTableSize   (                                          );
+int  hash            (int  , int                                );
+void ThreeHashMethods(                                          );
+int* OA_LinearProbe  (int* , int      , int []                  ); 
+void OA_DoubleHash   (int* , int      , int []   , bool&        );
+void SeparateChaining(int* , int      , TABLE []                );
+int  HashDriver      (int  , int []   , double                  );
+void LinearProbe     (int& , int []   , int      , int   , int& );
+int  DoubleHash      (int  , int      , int                     );
+int  TableOneMatch   (int* , int*     , int      , int   , int  );
+int  TableTwoMatch   (int* , TABLE [] , int      , int          );
+void DisplayResults  (int  , double   , int                     );
 
 ////////////////////////////////////////////////////////////////////////////////
 ///  FUNCTION:	     main()
@@ -77,6 +86,7 @@ void DisplayResults  (int colCount, double loadFactor, int loop);
 int main ()
 {   
   HeaderMain ();
+  
   ThreeHashMethods();
     
   system ("PAUSE") ;
@@ -258,15 +268,15 @@ void ThreeHashMethods()
 int HashDriver(int tbSize, int randArray[], double loadFactor)
 {
   int    *ht = NULL,                  //hash table
-         colCount; 
- TABLE *chainingArray = new (nothrow) TABLE[tbSize];                   //collision count
- if(!chainingArray){
-   cout << "Stack Overflow!" << endl;
-   return 1;
- }
-  
-  bool   infiniteLoop;   
-
+         colCount;                    //collision count
+  bool   infiniteLoop;                           
+  TABLE  *chainingArray = new (nothrow) TABLE[tbSize];   
+ 
+  if(!chainingArray){
+    cout << "Stack Overflow!" << endl;
+    return 1;
+  }
+       
   for(int loop = 0; loop < NUM_PROBING_LOOPS; loop++){
 
     colCount = 0;
@@ -439,14 +449,12 @@ void OA_DoubleHash(int *randArray,int tbSize,int hashTable[],
                    bool& infiniteLoop){
   int key       = 0,
       address   = 0,
-      errorCount,
-      debugCount = 0;
+      errorCount;
   
   infiniteLoop = false; 
     
   while((key < MAX_KEYS) && !infiniteLoop){
     address    = Hash(randArray[key], tbSize);
-    ++debugCount;
     errorCount = 0;
     while((hashTable[address] != 0) && !infiniteLoop){
       address += DoubleHash(address, tbSize);
@@ -489,7 +497,7 @@ void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
     address = Hash(randArray[key], tbSize);          
   
     if (chainingArray[address].key == 0) { 
-      chainingArray[address].key = randArray[key];
+      chainingArray[address].key  = randArray[key];
       chainingArray[address].next = NULL;
       ++key;
     }
@@ -502,9 +510,8 @@ void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
         heapError = true;
       }
       else {
-        newPtr->key = chainingArray[address].key;
+        newPtr->key  = randArray[key];
         newPtr->next = chainingArray[address].next;
-        chainingArray[address].key = randArray[key];
         chainingArray[address].next = newPtr;
         ++key;
       }
@@ -538,7 +545,7 @@ void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
 int TableOneMatch(int *randArray, int *ht, int tbSize, int loop, 
                   int colCount)
 {
-  int key = 0,
+  int key     = 0,
       address = 0;
     
   colCount = 0;     //resetting count for each collision method
@@ -557,7 +564,7 @@ int TableOneMatch(int *randArray, int *ht, int tbSize, int loop,
 	      LinearProbe(address, ht, randArray[key], tbSize, colCount);
 	      ++colCount; 
         }
-	      
+
       
         else if(loop == 1){
           while (ht[address] != randArray[key]) {
@@ -591,17 +598,14 @@ int TableOneMatch(int *randArray, int *ht, int tbSize, int loop,
 ////////////////////////////////////////////////////////////////////////////////
 int TableTwoMatch(int *randArray, TABLE chainingArray[], int colCount, 
                   int tbSize){
-  int key     = 0,
-      address = 0,
-      missedCount = 0;
-  bool linearError;
-  TABLE *tempPtr = NULL; 
+  int   key         = 0,
+        address     = 0;
+  TABLE *tempPtr    = NULL; 
 
   colCount = 0;                 //reinitializing colCount
 
   while (key < MAX_KEYS){
     address =  Hash(randArray[key],tbSize);
-    linearError = false;
 
     if (chainingArray[address].key == randArray[key]) {
       ++colCount;   //for the item being found at the first location                  
@@ -610,10 +614,9 @@ int TableTwoMatch(int *randArray, TABLE chainingArray[], int colCount,
     else {
       tempPtr  = chainingArray[address].next;
               
-      while((tempPtr->key  != randArray[key]) && !linearError){
+      while(tempPtr->key  != randArray[key]){
         ++colCount; //for each time the item is not found                                         
-	    tempPtr = tempPtr->next;
-        ++missedCount;          	       
+	    tempPtr = tempPtr->next;        	       
       }             //end second while 
       
       ++colCount;   //for the item being found           
@@ -625,8 +628,3 @@ int TableTwoMatch(int *randArray, TABLE chainingArray[], int colCount,
 
   return colCount;
 }
-
-
-  
-  
-  
