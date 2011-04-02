@@ -41,17 +41,23 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstddef>
+
+#ifdef _WIN32 
+#include <windows.h>
+#endif
+
+
 using namespace std;
 
 // Constants:
 const int    MAX_INT_SIZE            = 30000,
-             MIN_INT_SIZE            = 1,
-             NUM_PROBING_LOOPS       = 3,
-             MIN_HASH_TABLE_SIZE     = 6500,
-             MAX_KEYS                = 5000,
-             NUM_ITEMS_TO_SEARCH     = 2500;
+  MIN_INT_SIZE            = 1,
+  NUM_PROBING_LOOPS       = 3,
+  MIN_HASH_TABLE_SIZE     = 6500,
+  MAX_KEYS                = 5000,
+  NUM_ITEMS_TO_SEARCH     = 2500;
 const double NUM_ITEMS_TO_SEARCH_DBL = 2500.00,
-             MAX_KEYS_DBL            = 5000.00;
+  MAX_KEYS_DBL            = 5000.00;
 
           
 struct TABLE{
@@ -81,15 +87,19 @@ void DisplayResults  (int  , double   , int                     );
 ///  OUTPUT:   
 ///  	Return Val:  returns 0 if success
 ///  CALLS TO:       ThreeHashMethods()
-///  IMPLEMENTED BY:
+///  IMPLEMENTED BY: Jeremy and Jason
 ////////////////////////////////////////////////////////////////////////////////
 int main ()
 {   
   HeaderMain ();
-  
+  //get user info and create table followed by
+  //display of hash table info
   ThreeHashMethods();
-    
-  system ("PAUSE") ;
+  //system pause for windows
+  //you can remove if using on Unix or Linux
+  #ifdef _WIN32 
+  system ("PAUSE");
+  #endif
   return 0;
 }
 
@@ -101,11 +111,11 @@ int main ()
 ////////////////////////////////////////////////////////////////////////////////
 void HeaderMain ()  
 {
+  //introductive printout to user
   cout << "    Programming Assignment #2" << endl;
   cout << setfill(' ') << setw(16) << right << "by" << endl;
   cout << setw(27) << "Jason Mansfield & Jeremy Bradshaw" << endl << endl;
     
-  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +131,7 @@ void HeaderMain ()
 int Hash (int key, int listSize)
 {
   int address = 0;
-  
+  //modulo-division method
   address = key % listSize;
   
   return address;
@@ -139,6 +149,7 @@ int Hash (int key, int listSize)
 ////////////////////////////////////////////////////////////////////////////////
 int DoubleHash (int key, int listSize)
 {   
+  //open addressing via double hash method
   key = (key % (listSize - 2)) + 1;
   
   return key;
@@ -162,19 +173,25 @@ int RandNums(int *randArray)
   srand(time(0));
   
   while (count < MAX_KEYS) {
+    //use rand() to create random int
     randNum = rand() % MAX_INT_SIZE;
     randNumDuplicate = false;
     
     for (int index = 0; (index < count) && !randNumDuplicate; index++){
+      //go back through current array and verify no int match current random int
       if (randArray[index] == randNum) 
+	//if a int within current array is a match mark bool below true
         randNumDuplicate = true;       
     }
        
     if (!randNumDuplicate) {
+      //if no duplicate was found enter new rand int into array and
+      //increment count
       randArray[count] = randNum;
       ++count;
     } 
-  }                              
+  }
+  //return array full of random int                              
   return *randArray;
 }
       
@@ -194,7 +211,9 @@ int HashTableSize()
        << MIN_HASH_TABLE_SIZE << " or greater: ";
   cin  >> userChoose;
   cout << endl;
-
+  //ensure the users selection is large enough
+  //if not the below while loop will continue until a satisfactory
+  //size is chosen by user
   while(userChoose < MIN_HASH_TABLE_SIZE){
 
     cout << "Whoops! A Hash Table with an index size of " 
@@ -206,6 +225,7 @@ int HashTableSize()
     cin  >> userChoose;
     cout << endl;
   }
+  //return int which is the users selected size for the two hash tables
   return userChoose;
 }
 
@@ -222,16 +242,18 @@ int HashTableSize()
 void ThreeHashMethods()
 {
   int    tbSize     = 0,
-         randArray[MAX_KEYS];
+    randArray[MAX_KEYS];
   double loadFactor = 0.00;
-  
+  //make sure all indexes are NULL
   for(int index = 0; index <= MAX_KEYS; index++){
     randArray[index] = 0; 
   }
-   
+  //get a random array of int
   RandNums(randArray);
-  
-  tbSize     = HashTableSize();  
+  //now enter HashTableSize() function which requests the size
+  //the user wishes for Hash Table sizes
+  tbSize     = HashTableSize();
+  //calculate the load factor of requested Hash Table by it's size  
   loadFactor = MAX_KEYS_DBL / tbSize;
 
   cout << fixed            << setprecision(2);
@@ -240,10 +262,8 @@ void ThreeHashMethods()
   cout << "Load Factor = " << loadFactor              << endl << endl;
   cout << "Results of searching for " 
        << NUM_ITEMS_TO_SEARCH << " items:"            << endl << endl;
-       
+  //now enter driver function
   HashDriver(tbSize,randArray, loadFactor);
-  
-  return; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -267,22 +287,23 @@ void ThreeHashMethods()
 ////////////////////////////////////////////////////////////////////////////////
 int HashDriver(int tbSize, int randArray[], double loadFactor)
 {
-  int    *ht = NULL,                  //hash table
-         colCount;                    //collision count
-  bool   infiniteLoop;                           
+  int      *ht = NULL,                  //hash table
+             colCount;                    //collision count
+  bool   infiniteLoop;  
+  //Calling memory from HEAP and creating a Structure Array.                         
   TABLE  *chainingArray = new (nothrow) TABLE[tbSize];   
- 
+  //verify memory is available on this computer.
   if(!chainingArray){
-    cout << "Stack Overflow!" << endl;
+    cout << "Allocation Error!" << endl;
     return 1;
   }
        
   for(int loop = 0; loop < NUM_PROBING_LOOPS; loop++){
-
+    
     colCount = 0;
-    
+    //fill hash table ht
     ht = new (nothrow) int[tbSize];
-    
+    //verify memory is available
     if(!ht){
       cout << "ERROR: Allocation failure.\n"   << endl;
       cout << "WHOOPS! Most likely your Hash "
@@ -290,38 +311,58 @@ int HashDriver(int tbSize, int randArray[], double loadFactor)
     } 
     else{
       for(int index = 0; index < tbSize; index++){
+        //make sure all index are clean before running through
+        //all hash tables one by one.
     	ht[index] = 0;
       }
-      
+      //variable loop signifies which method will be used each time
+      //in this case loop == 0 so Linear Probing will be used
       if(loop == 0){
-	    ht       = OA_LinearProbe(randArray, tbSize, ht);	    
-	    colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);
-	    DisplayResults(colCount, loadFactor, loop);
+	//create the hash table
+	ht       = OA_LinearProbe(randArray, tbSize, ht);
+	//verify table matches random array after creation above	    
+	colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);
+	//lastly display findings
+	DisplayResults(colCount, loadFactor, loop);
+	//delete and return memory
         delete [] ht;
+	//ht == 0
         ht = NULL;
       }
-      else if(loop == 1){      
-	    OA_DoubleHash(randArray, tbSize, ht, infiniteLoop);
-	    if (infiniteLoop){
+      //loop == 1 so this time a Double Hash will be used
+      else if(loop == 1){
+	//fill new hash table ht again      
+	OA_DoubleHash(randArray, tbSize, ht, infiniteLoop);
+	//safeguard make sure its not entering dangerous never ending loop
+	if (infiniteLoop){
           cout << "Hashing Error. No data displayed for Double Hashing." 
                << endl;
         }                  
-	    else {          
-	      colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);	      
-	      DisplayResults (colCount, loadFactor, loop);
+	else { 
+	  //verify random array equals hash table ht after creation above         
+	  colCount = TableOneMatch(randArray, ht, tbSize, loop, colCount);
+	  //display findings	      
+	  DisplayResults (colCount, loadFactor, loop);
+	  //delete and release memory
           delete [] ht;
+          //ht == 0
           ht = NULL;
         }
       }
+      //finally on the last loop Separate Chaining will be used
       else{
-        SeparateChaining(randArray, tbSize, chainingArray);        
+        //fill hash table chainingArray with randArray
+        SeparateChaining(randArray, tbSize, chainingArray);
+        //verify filled chainingArray matches randArray        
         colCount = TableTwoMatch(randArray, chainingArray, colCount, tbSize );
+        //display findings
         DisplayResults (colCount, loadFactor, loop);
       }
       
     }
     cout << endl;
   }
+  //return 0 if memory was allocated properly for hash table chainingArray
   return 0;
 }
        
@@ -346,14 +387,18 @@ int* OA_LinearProbe(int *randArray, int tbSize, int *hashTable)
       nulCount = 0; 
       
   while(key < MAX_KEYS){
+    //use modulo-division method by calling HASH function
     address = Hash(randArray[key],tbSize);
     if(hashTable[address] != 0){
+      //if new address is NULL 
       LinearProbe(address, hashTable, 0, tbSize, nulCount);
     }
-    
+    //once null address found add int to hash table
     hashTable[address] = randArray[key];
+    //increment
     ++key;
   }
+  //return full hash table
   return hashTable;
 }
 
@@ -377,16 +422,16 @@ int* OA_LinearProbe(int *randArray, int tbSize, int *hashTable)
 void LinearProbe(int& address,int hashTable[],int probeThis,int tbSize, 
                  int& colCount)
 {
-    
+  //linear probe list until int probeThis is
+  //an exact match with hashTable[address]  
   while(hashTable[address] != probeThis){
     ++colCount;
     ++address;
-    
+    //prevent addresses above table size being accessed
     if(address >= tbSize)
       address = 0;
       
   }
-  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +450,10 @@ void DisplayResults (int colCount, double loadFactor, int loop)
   double avg          = 0,
          knuthResults = 0;
   
-  
+  //calculate knuth using loadFactor for each loop
+  //0 = linear probing
+  //1 = Double hash
+  //2 = Separate Chaining
   if (loop == 0) {
     knuthResults = 0.5 * (1 + ( 1 / (1 - loadFactor) ) );
     cout << "<< Linear Probing >>" << endl;
@@ -418,16 +466,15 @@ void DisplayResults (int colCount, double loadFactor, int loop)
     knuthResults = 1 + (loadFactor / 2);
     cout << "<< Separate Chaining >>" << endl;
   }                 
-  
+  //get average
   avg = colCount / NUM_ITEMS_TO_SEARCH_DBL;
-  
+  //print results to user
   cout << fixed << setprecision(2) << right << setfill(' ') << setw(7);
   cout << colCount << " items examined (avg = " 
        << avg      << " items examined per search)"         << endl;
   cout << "     vs Knuth predicted avg = " << knuthResults
        << " items examined per search"                      << endl << endl;
   
-  return;
 }
   
 ////////////////////////////////////////////////////////////////////////////////
@@ -449,27 +496,31 @@ void OA_DoubleHash(int *randArray,int tbSize,int hashTable[],
                    bool& infiniteLoop){
   int key       = 0,
       address   = 0,
-      errorCount;
+         errorCount;
   
   infiniteLoop = false; 
     
   while((key < MAX_KEYS) && !infiniteLoop){
+    //call modulos division method
     address    = Hash(randArray[key], tbSize);
     errorCount = 0;
     while((hashTable[address] != 0) && !infiniteLoop){
+      //use double hash until address is found or
+      //error count becomes too high
       address += DoubleHash(randArray[key], tbSize);
       ++errorCount;
+      //redo hash if address reaches the end of list
       if (address > tbSize)
         address = address % tbSize;
+      //if error count becomes to high escape while loop
       if (errorCount > (2 * tbSize))
-        infiniteLoop = true;
-                        
+        infiniteLoop = true;                       
     }
-    
+    //if found give hashtable address new key
     hashTable[address] = randArray[key];
+    //increment
     ++key;
   }
-  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -488,27 +539,29 @@ void OA_DoubleHash(int *randArray,int tbSize,int hashTable[],
 ///  IMPLEMENTED BY: Jeremy Bradshaw
 ////////////////////////////////////////////////////////////////////////////////
 void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
-  int    key       = 0,
-         address   = 0; 
+  int       key       = 0,
+            address   = 0; 
   TABLE *newPtr    = NULL;
-  bool   heapError = false;
+  bool  heapError = false;
   
   while ((key < MAX_KEYS) && !heapError) {
+    //get address via modulos division method
     address = Hash(randArray[key], tbSize);          
-  
+    //enter random int into correct address in
+    //new node
     if (chainingArray[address].key == 0) { 
       chainingArray[address].key  = randArray[key];
       chainingArray[address].next = NULL;
       ++key;
     }
-       
+    //allocate memory for new node from heap
     else if (chainingArray[address].key != 0) {
       newPtr = new (nothrow) TABLE;   
-      
       if (newPtr == NULL) {
         cout << "Heap error - could not allocate memory." << endl;
         heapError = true;
       }
+      //add new node to linked list
       else {
         newPtr->key  = randArray[key];
         newPtr->next = chainingArray[address].next;
@@ -518,7 +571,6 @@ void SeparateChaining(int *randArray,int tbSize, TABLE chainingArray[]){
     }
   }       
 
-  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -548,37 +600,48 @@ int TableOneMatch(int *randArray, int *ht, int tbSize, int loop,
   int key     = 0,
       address = 0;
     
-  colCount = 0;     //resetting count for each collision method
-     
+  colCount = 0;//resetting count for each collision method
+  //using random array for matches therefore while loops until
+  //all matches are discovered against MAX_KEYS which is the 
+  //same amount of indexes in the random array.  
   while(key < MAX_KEYS){
-    
+    //use function which runs modulo-division method
     address = Hash(randArray[key],tbSize);
-    
+    //if address directly after modulos is a match then
+    //continue on imediatly 
     if (ht[address] == randArray[key])
-    ++colCount;
-    
+      ++colCount;
+    //if address is not a match use linear probe method searching
     else {
       while(ht[address] != randArray[key]){
-        ++colCount;   //one count for not finding it at original element                
+        ++colCount;
+        //if loop equals 0 use Linear probing
+        //int loop was determined in driver function previously               
         if(loop == 0) {
-	      LinearProbe(address, ht, randArray[key], tbSize, colCount);
-	      ++colCount; 
+          //call linear probe and try and find a matching address
+	  LinearProbe(address, ht, randArray[key], tbSize, colCount);
+	  ++colCount; 
         }
-
-      
+        //if loop equals 1 use Double Hash Method
+        //int loop was determined in driver function previously
         else if(loop == 1){
           while (ht[address] != randArray[key]) {
-            ++colCount;  
-	        address += DoubleHash(randArray[key], tbSize);
-	        if (address > tbSize) {          
+            ++colCount;
+            //call function to handle Double Hash function  
+	    address += DoubleHash(randArray[key], tbSize);
+	    if (address > tbSize) {
+              //use modulo-division method if address becomes larger than
+              //allowed table size.          
               address = address % tbSize;
             }
           }
         }
       }
-    }    
+    }
+    //increment by two for entire while loop and continue on until
+    //MAX_KEYS is reached    
     key += 2; 
-  }
+  }  
   return colCount;
 }
 
@@ -598,25 +661,26 @@ int TableOneMatch(int *randArray, int *ht, int tbSize, int loop,
 ////////////////////////////////////////////////////////////////////////////////
 int TableTwoMatch(int *randArray, TABLE chainingArray[], int colCount, 
                   int tbSize){
-  int   key         = 0,
-        address     = 0;
+  int      key         = 0,
+           address     = 0;
   TABLE *tempPtr    = NULL; 
 
   colCount = 0;                 //reinitializing colCount
 
   while (key < MAX_KEYS){
+    //use modulo-division method
     address =  Hash(randArray[key],tbSize);
-
+    //if hashed address is a match then increment key and loop
     if (chainingArray[address].key == randArray[key]) {
       ++colCount;   //for the item being found at the first location                  
     }
-    
+    //if not traverse until found
     else {
       tempPtr  = chainingArray[address].next;
               
       while(tempPtr->key  != randArray[key]){
         ++colCount; //for each time the item is not found                                         
-	    tempPtr = tempPtr->next;        	       
+	tempPtr = tempPtr->next;        	       
       }             //end second while 
       
       ++colCount;   //for the item being found           
